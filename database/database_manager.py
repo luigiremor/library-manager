@@ -11,6 +11,14 @@ class DatabaseManager:
 
     def create_tables(self):
         # Create tables for Library, Person, Item, Reservation, Lend etc.
+
+        self.create_table_librarian()
+
+        self.create_table_student()
+
+        # Repeat this for each table you need, adjusting the fields as necessary
+
+    def create_table_librarian(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS librarians (
                 id INTEGER PRIMARY KEY,
@@ -19,7 +27,9 @@ class DatabaseManager:
                 password TEXT NOT NULL
             )
         """)
+        self.conn.commit()
 
+    def create_table_student(self):
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS students (
                 id INTEGER PRIMARY KEY,
@@ -31,8 +41,7 @@ class DatabaseManager:
                 fine_delay REAL NOT NULL DEFAULT 0
             )
         """)
-
-        # Repeat this for each table you need, adjusting the fields as necessary
+        self.conn.commit()
 
     def hash_password(self, password):
         """Hash a password for storing."""
@@ -53,6 +62,23 @@ class DatabaseManager:
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         return pwdhash == stored_password
 
+    def insert(self, table, fields, values):
+        query = f"INSERT INTO {table} ({', '.join(fields)}) VALUES ({', '.join(['?' for _ in values])})"
+        self.cursor.execute(query, values)
+        self.conn.commit()
+
+    def select_one(self, table, field, value):
+        query = f"SELECT * FROM {table} WHERE {field} = ?"
+        self.cursor.execute(query, (value,))
+        result = self.cursor.fetchone()
+        return result if result else None
+
+    def select_all(self, table):
+        query = f"SELECT * FROM {table}"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        return result if result else None
+
     def get_librarian_password(self, email):
         self.cursor.execute("""
             SELECT password FROM librarians WHERE email = ?
@@ -62,26 +88,33 @@ class DatabaseManager:
         return result[0] if result else None
 
     def is_email_registered(self, email):
-        self.cursor.execute("""
-            SELECT email FROM librarians WHERE email = ?
-        """, (email,))
-
-        result = self.cursor.fetchone()
-        return result[0] if result else None
+        return self.select_one('librarians', 'email', email) is not None
 
     def create_librarian(self, name, email, password):
-        # check if email already exists
         if self.is_email_registered(email):
             return False
 
         hashed_password = self.hash_password(password)
-        self.cursor.execute("""
-            INSERT INTO librarians (name, email, password) VALUES (?, ?, ?)
-        """, (name, email, hashed_password))
-        self.conn.commit()
+        self.insert('librarians', ['name', 'email', 'password'], [
+                    name, email, hashed_password])
+
+    def get_librarian(self, email):
+        return self.select_one('librarians', 'email', email)
+
+    def create_student(self, name, email, cpf, tel, registration):
+        self.insert('students', ['name', 'email', 'cpf', 'tel', 'registration'], [
+                    name, email, cpf, tel, registration])
+
+    def get_student(self, registration):
+        return self.select_one('students', 'registration', registration)
 
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
 
     def close_connection(self):
         self.conn.close()
+
+    def drop_tables(self):
+        self.cursor.execute("DROP TABLE IF EXISTS librarians")
+        self.cursor.execute("DROP TABLE IF EXISTS students")
+        self.conn.commit()

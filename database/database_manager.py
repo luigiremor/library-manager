@@ -188,6 +188,20 @@ class DatabaseManager:
         
         return None
 
+    def get_student_who_reserved_book(self, book_id):
+        self.cursor.execute("""
+            SELECT students.* 
+            FROM books
+            JOIN students ON books.id_student_reserved = students.id
+            WHERE books.id = ?
+        """, (book_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+        
+        return None
 
 
     # Implement similar methods for all operations (insert, update, delete, select) on each table

@@ -6,6 +6,8 @@ from model.librarian import Librarian
 from model.magazine import Magazine
 from model.student import Student
 
+from authenticators.authenticator import Authenticator
+
 
 class TestDatabaseManager(unittest.TestCase):
     @classmethod
@@ -31,8 +33,8 @@ class TestDatabaseManager(unittest.TestCase):
     def test_librarian_password_authentication(self):
         self.db.create_librarian(self.librarian.name, self.librarian.email, self.password)
         stored_password = self.db.get_librarian_password(self.librarian.email)
-        self.assertTrue(self.db.verify_password(stored_password, self.password))
-        self.assertFalse(self.db.verify_password(stored_password, 'wrong_password'))
+        self.assertTrue(Authenticator.verify_password(stored_password, self.password))
+        self.assertFalse(Authenticator.verify_password(stored_password, 'wrong_password'))
 
     def test_create_and_retrieve_librarian(self):
         self.db.create_librarian(self.librarian.name, self.librarian.email, self.password)

@@ -1,14 +1,12 @@
-import binascii
 from datetime import datetime, timedelta
-import hashlib
-import os
-import sqlite3
+from authenticators.authenticator import Authenticator
+from database.base_table_manager import BaseTableManager
 
 
-class DatabaseManager:
+class DatabaseManager(BaseTableManager):
     def __init__(self, db_name):
-        self.conn = sqlite3.connect(db_name)
-        self.cursor = self.conn.cursor()
+        super().__init__(db_name)
+        self.create_tables()
 
     def create_tables(self):
         # Create tables for Library, Person, Item, Reservation, Lend etc.
@@ -132,52 +130,6 @@ class DatabaseManager:
         """)
         self.conn.commit()
 
-    def hash_password(self, password):
-        """Hash a password for storing."""
-        salt = hashlib.sha256(os.urandom(60)).hexdigest().encode('ascii')
-        pwdhash = hashlib.pbkdf2_hmac('sha512', password.encode('utf-8'),
-                                      salt, 100000)
-        pwdhash = binascii.hexlify(pwdhash)
-        return (salt + pwdhash).decode('ascii')
-
-    def verify_password(self, stored_password, provided_password):
-        """Verify a stored password against one provided by user"""
-        salt = stored_password[:64]
-        stored_password = stored_password[64:]
-        pwdhash = hashlib.pbkdf2_hmac('sha512',
-                                      provided_password.encode('utf-8'),
-                                      salt.encode('ascii'),
-                                      100000)
-        pwdhash = binascii.hexlify(pwdhash).decode('ascii')
-        return pwdhash == stored_password
-
-    def insert(self, table, fields, values):
-        query = f"INSERT INTO {table} ({', '.join(fields)}) VALUES ({', '.join(['?' for _ in values])})"
-        self.cursor.execute(query, values)
-        self.conn.commit()
-
-    def select_one(self, table, field, value):
-        query = f"SELECT * FROM {table} WHERE {field} = ?"
-        self.cursor.execute(query, (value,))
-        result = self.cursor.fetchone()
-
-        if result:
-            columns = [column[0] for column in self.cursor.description]
-            return dict(zip(columns, result))
-
-        return None
-
-    def select_all(self, table):
-        query = f"SELECT * FROM {table}"
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-
-        if result:
-            columns = [column[0] for column in self.cursor.description]
-            return [dict(zip(columns, row)) for row in result]
-
-        return None
-
     def get_librarian_password(self, email):
         password = self.select_one('librarians', 'email', email)['password']
         return password
@@ -189,7 +141,7 @@ class DatabaseManager:
         if self.is_email_registered(email):
             return False
 
-        hashed_password = self.hash_password(password)
+        hashed_password = Authenticator.hash_password(password)
         self.insert('librarians', ['name', 'email', 'password'], [
                     name, email, hashed_password])
         return True

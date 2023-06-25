@@ -1,5 +1,6 @@
 import unittest
 from database.database_manager import DatabaseManager
+from model.book import Book
 from model.librarian import Librarian
 from model.student import Student
 
@@ -70,6 +71,62 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertEqual(student.cpf, student_db[3])
         self.assertEqual(student.tel, student_db[4])
         self.assertEqual(student.registration, student_db[5])
+
+    def test_create_and_get_book(self):
+        # Create a new book
+
+        book = Book('The Lord of the Rings', 'J. R. R. Tolkien', False, False, '1954')
+
+        self.db.create_book(book.title, book.author, book.release_year)
+
+        # Verify the book
+        book_db = self.db.get_book(1)
+
+        self.assertEqual(book.title, book_db[1])
+        self.assertEqual(book.author, book_db[2])
+        self.assertEqual(book.release_year, book_db[3])
+        self.assertEqual(book.is_lend, book_db[4])
+        self.assertEqual(book.is_reserved, book_db[5])
+
+    def test_lend_book(self):
+        # Create a student
+
+        student = Student('Book1', 'book1@gmail.com',
+                          '321324532', '123456789', '321423531')
+        
+        self.db.create_student(student.name, student.email,
+                               student.cpf, student.tel, student.registration)
+        
+        # Create a new book
+
+        book = Book('The Lord of the Ring', 'J. R. R. Tolkien', False, False, '1954')
+
+        self.db.create_book(book.title, book.author, book.release_year)
+
+        # Verify the book
+        book_db = self.db.get_book(2)
+
+        self.assertEqual(book.title, book_db[1])
+        self.assertEqual(book.author, book_db[2])
+        self.assertEqual(book.release_year, book_db[3])
+        self.assertEqual(book.is_lend, book_db[4])
+        self.assertEqual(book.is_reserved, book_db[5])
+
+        # Lend the book
+
+        self.db.lend_book(book_db[0], student.registration)
+
+        # Verify the book
+        book_db = self.db.get_book(2)
+
+        self.assertEqual(book.title, book_db[1])
+        self.assertEqual(book.author, book_db[2])
+        self.assertEqual(book.release_year, book_db[3])
+        self.assertEqual(True, book_db[4])
+        self.assertEqual(book.is_reserved, book_db[5])
+
+
+        
 
 
 # If the script is run directly, run the tests

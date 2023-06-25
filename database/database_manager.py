@@ -1,4 +1,5 @@
 import binascii
+from datetime import datetime, timedelta
 import hashlib
 import os
 import sqlite3
@@ -11,14 +12,13 @@ class DatabaseManager:
 
     def create_tables(self):
         # Create tables for Library, Person, Item, Reservation, Lend etc.
-
         self.create_table_librarian()
-
         self.create_table_student()
-
-        self.create_table_book()
-
-        # Repeat this for each table you need, adjusting the fields as necessary
+        self.create_table_item()
+        self.create_table_book_item()
+        # Add other item types like self.create_table_magazine_item() or self.create_table_article_item()
+        self.create_table_reservation()
+        self.create_table_lend()
 
     def create_table_librarian(self):
         self.cursor.execute("""
@@ -45,12 +45,11 @@ class DatabaseManager:
         """)
         self.conn.commit()
 
-    def create_table_book(self):
+    def create_table_item(self):
         self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS books (
+            CREATE TABLE IF NOT EXISTS items (
                 id INTEGER PRIMARY KEY,
                 title TEXT NOT NULL,
-                author TEXT NOT NULL,
                 release_year TEXT NOT NULL,
                 is_lend INTEGER NOT NULL DEFAULT 0,
                 is_reserved INTEGER NOT NULL DEFAULT 0,
@@ -58,6 +57,46 @@ class DatabaseManager:
                 id_student_reserved INTEGER,
                 FOREIGN KEY (id_student_lent) REFERENCES students (id),
                 FOREIGN KEY (id_student_reserved) REFERENCES students (id)
+            )
+        """)
+        self.conn.commit()
+
+    def create_table_book_item(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS book_items (
+                id INTEGER PRIMARY KEY,
+                author TEXT NOT NULL,
+                id_item INTEGER NOT NULL,
+                FOREIGN KEY (id_item) REFERENCES items (id)
+            )
+        """)
+        self.conn.commit()
+
+    def create_table_reservation(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS reservations (
+                id INTEGER PRIMARY KEY,
+                reservation_date TEXT NOT NULL,
+                status TEXT NOT NULL,
+                id_student INTEGER NOT NULL,
+                id_item INTEGER NOT NULL,
+                FOREIGN KEY (id_student) REFERENCES students (id),
+                FOREIGN KEY (id_item) REFERENCES items (id)
+            )
+        """)
+        self.conn.commit()
+
+    def create_table_lend(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS lends (
+                id INTEGER PRIMARY KEY,
+                lend_date TEXT NOT NULL,
+                return_date TEXT NOT NULL,
+                status TEXT NOT NULL,
+                id_student INTEGER NOT NULL,
+                id_item INTEGER NOT NULL,
+                FOREIGN KEY (id_student) REFERENCES students (id),
+                FOREIGN KEY (id_item) REFERENCES items (id)
             )
         """)
         self.conn.commit()
@@ -134,52 +173,105 @@ class DatabaseManager:
     def get_student(self, registration):
         return self.select_one('students', 'registration', registration)
     
-    def get_book(self, book_id):
-        return self.select_one('books', 'id', book_id)
+    def get_all_students(self):
+        return self.select_all('students')
     
-    def create_book(self, title, author, release_year):
-        self.insert('books', ['title', 'author', 'release_year'], [
-                    title, author, release_year])
-    
-    def lend_book(self, book_id, student_id):
+    def get_book_item(self, item_id):
         self.cursor.execute("""
-            UPDATE books
-            SET is_lend = 1, id_student_lent = ?
-            WHERE id = ?
-        """, (student_id, book_id))
-        self.conn.commit()
+            SELECT items.*, book_items.author 
+            FROM items
+            JOIN book_items ON items.id = book_items.id_item
+            WHERE items.id = ?
+        """, (item_id,))
+        result = self.cursor.fetchone()
 
-    def reserve_book(self, book_id, student_id):
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+        
+        return None
+
+    
+    def create_book_item(self, title, author, release_year):
+        self.insert('items', ['title', 'release_year'], [title, release_year])
+        last_inserted_id = self.cursor.lastrowid
+        self.insert('book_items', ['author', 'id_item'], [author, last_inserted_id])
+        
+        return last_inserted_id
+
+    def reserve_item(self, item_id, student_id):
         self.cursor.execute("""
-            UPDATE books
+            UPDATE items
             SET is_reserved = 1, id_student_reserved = ?
             WHERE id = ?
-        """, (student_id, book_id))
+        """, (student_id, item_id))
+
+        reservation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        status = 'reserved'
+        self.insert('reservations', ['reservation_date', 'status', 'id_student', 'id_item'], 
+                    [reservation_date, status, student_id, item_id])
+
         self.conn.commit()
 
-    def cancel_book_reservation(self, book_id):
+    def lend_item(self, item_id, student_id):
         self.cursor.execute("""
-            UPDATE books
+            UPDATE items
+            SET is_lend = 1, id_student_lent = ?
+            WHERE id = ?
+        """, (student_id, item_id))
+
+        lend_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return_date = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S")
+        status = 'lent'
+        self.insert('lends', ['lend_date', 'return_date','status', 'id_student', 'id_item'], 
+                    [lend_date, return_date, status, student_id, item_id])
+
+        self.conn.commit()
+
+    def get_all_lends(self):
+        return self.select_all('lends')
+
+    def cancel_item_reservation(self, item_id):
+        self.cursor.execute("""
+            UPDATE items
             SET is_reserved = 0, id_student_reserved = NULL
             WHERE id = ?
-        """, (book_id,))
+        """, (item_id,))
         self.conn.commit()
 
-    def return_book(self, book_id):
+    def return_item(self, item_id):
         self.cursor.execute("""
-            UPDATE books
+            UPDATE items
             SET is_lend = 0, id_student_lent = NULL
             WHERE id = ?
-        """, (book_id,))
+        """, (item_id,))
         self.conn.commit()
 
-    def get_student_who_borrowed_book(self, book_id):
+
+    def get_student_who_borrowed_item(self, item_id):
         self.cursor.execute("""
             SELECT students.* 
-            FROM books
-            JOIN students ON books.id_student_lent = students.id
-            WHERE books.id = ?
-        """, (book_id,))
+            FROM items
+            JOIN students ON items.id_student_lent = students.registration
+            WHERE items.id = ?
+        """, (item_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            student = dict(zip(columns, result))
+            return student
+
+        return None
+
+
+    def get_student_who_reserved_item(self, item_id):
+        self.cursor.execute("""
+            SELECT students.* 
+            FROM items
+            JOIN students ON items.id_student_reserved = students.registration
+            WHERE items.id = ?
+        """, (item_id,))
         result = self.cursor.fetchone()
 
         if result:
@@ -187,22 +279,6 @@ class DatabaseManager:
             return dict(zip(columns, result))
         
         return None
-
-    def get_student_who_reserved_book(self, book_id):
-        self.cursor.execute("""
-            SELECT students.* 
-            FROM books
-            JOIN students ON books.id_student_reserved = students.id
-            WHERE books.id = ?
-        """, (book_id,))
-        result = self.cursor.fetchone()
-
-        if result:
-            columns = [column[0] for column in self.cursor.description]
-            return dict(zip(columns, result))
-        
-        return None
-
 
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
@@ -213,5 +289,8 @@ class DatabaseManager:
     def drop_tables(self):
         self.cursor.execute("DROP TABLE IF EXISTS librarians")
         self.cursor.execute("DROP TABLE IF EXISTS students")
-        self.cursor.execute("DROP TABLE IF EXISTS books")
+        self.cursor.execute("DROP TABLE IF EXISTS items")
+        self.cursor.execute("DROP TABLE IF EXISTS book_items")
+        self.cursor.execute("DROP TABLE IF EXISTS lends")
+        self.cursor.execute("DROP TABLE IF EXISTS reservations")
         self.conn.commit()

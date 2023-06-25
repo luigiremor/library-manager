@@ -17,8 +17,8 @@ class LibraryView(customtkinter.CTk):
         
         self.menu_auth = MenuAuth(self)
         self.menu_collection = MenuCollection(self)
-        self.menu_lend = MenuLend(self)
         self.menu_students = MenuStudents(self)
+        self.menu_lend = MenuLend(self)
 
         self.menu_auth.grid(row=0, column=0)
         self.menu_collection.grid(row=0, column=0)
@@ -26,6 +26,7 @@ class LibraryView(customtkinter.CTk):
         self.menu_students.grid(row=0, column=0)
 
         self.show_menu_auth()
+
     
 
     def show_menu_auth(self):

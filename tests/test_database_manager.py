@@ -103,6 +103,15 @@ class TestDatabaseManager(unittest.TestCase):
         student_db = self.db.get_student_who_borrowed_book(book_db['id'])
         self.assertEqual(self.student.name, student_db['name'])
 
+    def test_get_student_who_reserved_book(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_book(self.book.title, self.book.author, self.book.release_year)
+        book_db = self.db.get_book(1)
+        student_db = self.db.get_student(self.student.registration)
+        self.db.reserve_book(book_db['id'], student_db['id'])
+        student_db = self.db.get_student_who_reserved_book(book_db['id'])
+        self.assertEqual(self.student.name, student_db['name'])
+
 
 if __name__ == '__main__':
     unittest.main()

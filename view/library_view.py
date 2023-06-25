@@ -1,9 +1,9 @@
 import tkinter
 import customtkinter
-from view.menu_auth import MenuAuth
-from view.menu_collection import MenuCollection
-from view.menu_lend import MenuLend
-from view.menu_students import MenuStudents
+from view.menu_auth_view import MenuAuth
+from view.menu_collection_view import MenuCollection
+from view.menu_lend_view import MenuLend
+from view.menu_students_view import MenuStudents
 
 
 class LibraryView(customtkinter.CTk):
@@ -34,7 +34,7 @@ class LibraryView(customtkinter.CTk):
         self.menu_students.grid_remove()
         self.menu_auth.grid()
     
-    
+
     def show_menu_collection(self):
         self.menu_auth.grid_remove()
         self.menu_lend.grid_remove()

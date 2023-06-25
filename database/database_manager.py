@@ -90,16 +90,26 @@ class DatabaseManager:
         query = f"SELECT * FROM {table} WHERE {field} = ?"
         self.cursor.execute(query, (value,))
         result = self.cursor.fetchone()
-        return result if result else None
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+
+        return None
 
     def select_all(self, table):
         query = f"SELECT * FROM {table}"
         self.cursor.execute(query)
         result = self.cursor.fetchall()
-        return result if result else None
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return [dict(zip(columns, row)) for row in result]
+
+        return None
 
     def get_librarian_password(self, email):
-        password = self.select_one('librarians', 'email', email)[3]
+        password = self.select_one('librarians', 'email', email)['password']
         return password
 
     def is_email_registered(self, email):
@@ -163,6 +173,20 @@ class DatabaseManager:
         """, (book_id,))
         self.conn.commit()
 
+    def get_student_who_borrowed_book(self, book_id):
+        self.cursor.execute("""
+            SELECT students.* 
+            FROM books
+            JOIN students ON books.id_student_lent = students.id
+            WHERE books.id = ?
+        """, (book_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+        
+        return None
 
 
 

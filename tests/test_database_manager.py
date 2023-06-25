@@ -39,60 +39,70 @@ class TestDatabaseManager(unittest.TestCase):
         is_created = self.db.create_librarian(self.librarian.name, self.librarian.email, self.password)
         self.assertTrue(is_created, 'Librarian should be created successfully.')
         librarian_db = self.db.get_librarian(self.librarian.email)
-        self.assertEqual(self.librarian.name, librarian_db[1])
-        self.assertEqual(self.librarian.email, librarian_db[2])
+        self.assertEqual(self.librarian.name, librarian_db['name'])
+        self.assertEqual(self.librarian.email, librarian_db['email'])
 
     def test_create_and_retrieve_student(self):
         self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
         student_db = self.db.get_student(self.student.registration)
-        self.assertEqual(self.student.name, student_db[1])
-        self.assertEqual(self.student.email, student_db[2])
-        self.assertEqual(self.student.cpf, student_db[3])
-        self.assertEqual(self.student.tel, student_db[4])
-        self.assertEqual(self.student.registration, student_db[5])
+        self.assertEqual(self.student.name, student_db['name'])
+        self.assertEqual(self.student.email, student_db['email'])
+        self.assertEqual(self.student.cpf, student_db['cpf'])
+        self.assertEqual(self.student.tel, student_db['tel'])
+        self.assertEqual(self.student.registration, student_db['registration'])
 
     def test_create_and_retrieve_book(self):
         self.db.create_book(self.book.title, self.book.author, self.book.release_year)
         book_db = self.db.get_book(1)
-        self.assertEqual(self.book.title, book_db[1])
-        self.assertEqual(self.book.author, book_db[2])
-        self.assertEqual(self.book.release_year, book_db[3])
-        self.assertEqual(self.book.is_lend, book_db[4])
-        self.assertEqual(self.book.is_reserved, book_db[5])
+        self.assertEqual(self.book.title, book_db['title'])
+        self.assertEqual(self.book.author, book_db['author'])
+        self.assertEqual(self.book.release_year, book_db['release_year'])
+        self.assertEqual(self.book.is_lend, book_db['is_lend'])
+        self.assertEqual(self.book.is_reserved, book_db['is_reserved'])
 
     def test_lend_book_to_student(self):
         self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
         self.db.create_book(self.book.title, self.book.author, self.book.release_year)
         book_db = self.db.get_book(1)
-        self.db.lend_book(book_db[0], self.student.registration)
+        self.db.lend_book(book_db['id'], self.student.registration)
         book_db = self.db.get_book(1)
-        self.assertTrue(book_db[4])
+        self.assertTrue(book_db['is_lend'])
 
     def test_return_book_from_student(self):
         self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
         self.db.create_book(self.book.title, self.book.author, self.book.release_year)
         book_db = self.db.get_book(1)
-        self.db.lend_book(book_db[0], self.student.registration)
-        self.db.return_book(book_db[0])
+        self.db.lend_book(book_db['id'], self.student.registration)
+        self.db.return_book(book_db['id'])
         book_db = self.db.get_book(1)
-        self.assertFalse(book_db[4])
+        self.assertFalse(book_db['is_lend'])
 
     def test_reserve_book_to_student(self):
         self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
         self.db.create_book(self.book.title, self.book.author, self.book.release_year)
         book_db = self.db.get_book(1)
-        self.db.reserve_book(book_db[0], self.student.registration)
+        self.db.reserve_book(book_db['id'], self.student.registration)
         book_db = self.db.get_book(1)
-        self.assertTrue(book_db[5])
+        self.assertTrue(book_db['is_reserved'])
 
     def test_cancel_book_reservation_from_student(self):
         self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
         self.db.create_book(self.book.title, self.book.author, self.book.release_year)
         book_db = self.db.get_book(1)
-        self.db.reserve_book(book_db[0], self.student.registration)
-        self.db.cancel_book_reservation(book_db[0])
+        self.db.reserve_book(book_db['id'], self.student.registration)
+        self.db.cancel_book_reservation(book_db['id'])
         book_db = self.db.get_book(1)
-        self.assertFalse(book_db[5])
+        self.assertFalse(book_db['is_reserved'])
+
+    def test_get_student_who_borrowed_book(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_book(self.book.title, self.book.author, self.book.release_year)
+        book_db = self.db.get_book(1)
+        student_db = self.db.get_student(self.student.registration)
+        self.db.lend_book(book_db['id'], student_db['id'])
+        student_db = self.db.get_student_who_borrowed_book(book_db['id'])
+        self.assertEqual(self.student.name, student_db['name'])
+
 
 if __name__ == '__main__':
     unittest.main()

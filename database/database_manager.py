@@ -99,12 +99,8 @@ class DatabaseManager:
         return result if result else None
 
     def get_librarian_password(self, email):
-        self.cursor.execute("""
-            SELECT password FROM librarians WHERE email = ?
-        """, (email,))
-
-        result = self.cursor.fetchone()
-        return result[0] if result else None
+        password = self.select_one('librarians', 'email', email)[3]
+        return password
 
     def is_email_registered(self, email):
         return self.select_one('librarians', 'email', email) is not None

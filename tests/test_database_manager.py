@@ -68,5 +68,31 @@ class TestDatabaseManager(unittest.TestCase):
         book_db = self.db.get_book(1)
         self.assertTrue(book_db[4])
 
+    def test_return_book_from_student(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_book(self.book.title, self.book.author, self.book.release_year)
+        book_db = self.db.get_book(1)
+        self.db.lend_book(book_db[0], self.student.registration)
+        self.db.return_book(book_db[0])
+        book_db = self.db.get_book(1)
+        self.assertFalse(book_db[4])
+
+    def test_reserve_book_to_student(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_book(self.book.title, self.book.author, self.book.release_year)
+        book_db = self.db.get_book(1)
+        self.db.reserve_book(book_db[0], self.student.registration)
+        book_db = self.db.get_book(1)
+        self.assertTrue(book_db[5])
+
+    def test_cancel_book_reservation_from_student(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_book(self.book.title, self.book.author, self.book.release_year)
+        book_db = self.db.get_book(1)
+        self.db.reserve_book(book_db[0], self.student.registration)
+        self.db.cancel_book_reservation(book_db[0])
+        book_db = self.db.get_book(1)
+        self.assertFalse(book_db[5])
+
 if __name__ == '__main__':
     unittest.main()

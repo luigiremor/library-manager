@@ -147,6 +147,25 @@ class DatabaseManager:
         """, (student_id, book_id))
         self.conn.commit()
 
+    def cancel_book_reservation(self, book_id):
+        self.cursor.execute("""
+            UPDATE books
+            SET is_reserved = 0, id_student_reserved = NULL
+            WHERE id = ?
+        """, (book_id,))
+        self.conn.commit()
+
+    def return_book(self, book_id):
+        self.cursor.execute("""
+            UPDATE books
+            SET is_lend = 0, id_student_lent = NULL
+            WHERE id = ?
+        """, (book_id,))
+        self.conn.commit()
+
+
+
+
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
 

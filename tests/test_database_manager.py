@@ -1,5 +1,6 @@
 import unittest
 from database.database_manager import DatabaseManager
+from model.article import Article
 from model.book import Book
 from model.librarian import Librarian
 from model.student import Student
@@ -18,6 +19,7 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.create_tables()
         self.student = Student('Luigi', 'luigi@gmail.com', '12345678910', '123456789', '123456789')
         self.book = Book('The Lord of the Rings', 'J. R. R. Tolkien', False, False, '1954')
+        self.article = Article('The Power of Habit', '2012', False, False, 'Lalalalala', '371', 'Luigi', 'English', 'Habit, Self-help, Psychology')
         self.librarian = Librarian('Luigi', 'luigi@gmail.com')
         self.password = '123456'
 
@@ -111,6 +113,57 @@ class TestDatabaseManager(unittest.TestCase):
         student_db = self.db.get_student_who_reserved_item(book_db['id'])
         self.assertEqual(self.student.name, student_db['name'])
 
+    def test_create_and_get_article(self):
+        self.db.create_article_item(
+                                    release_year=self.article.release_year,
+                                    title=self.article.title,
+                                    abstract=self.article.abstract,
+                                    word_count=self.article.word_count,
+                                    author=self.article.author,
+                                    language=self.article.language,
+                                    keywords=self.article.keywords)
+        article_db = self.db.get_article_item(1)
+        self.assertEqual(self.article.title, article_db['title'])
+        self.assertEqual(self.article.release_year, article_db['release_year'])
+        self.assertEqual(int(self.article.word_count), article_db['word_count'])
+        self.assertEqual(self.article.abstract, article_db['abstract'])
+        self.assertEqual(self.article.author, article_db['author'])
+        self.assertEqual(self.article.language, article_db['language'])
+        self.assertEqual(self.article.keywords, article_db['keywords'])
+        self.assertEqual(self.article.is_lend, article_db['is_lend'])
+        self.assertEqual(self.article.is_reserved, article_db['is_reserved'])
+
+    def test_lend_article_to_student(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_article_item(
+                                    release_year=self.article.release_year,
+                                    title=self.article.title,
+                                    abstract=self.article.abstract,
+                                    word_count=self.article.word_count,
+                                    author=self.article.author,
+                                    language=self.article.language,
+                                    keywords=self.article.keywords)
+        article_db = self.db.get_article_item(1)
+        self.db.lend_item(article_db['id'], self.student.registration)
+        article_db = self.db.get_article_item(1)
+        self.assertTrue(article_db['is_lend'])
+
+    def test_return_article_from_student(self):
+        self.db.create_student(self.student.name, self.student.email, self.student.cpf, self.student.tel, self.student.registration)
+        self.db.create_article_item(
+                                    release_year=self.article.release_year,
+                                    title=self.article.title,
+                                    abstract=self.article.abstract,
+                                    word_count=self.article.word_count,
+                                    author=self.article.author,
+                                    language=self.article.language,
+                                    keywords=self.article.keywords)
+        article_db = self.db.get_article_item(1)
+        self.db.lend_item(article_db['id'], self.student.registration)
+        self.db.return_item(article_db['id'])
+        article_db = self.db.get_article_item(1)
+        self.assertFalse(article_db['is_lend'])
+        
 
 if __name__ == '__main__':
     unittest.main()

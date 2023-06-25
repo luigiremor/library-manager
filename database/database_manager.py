@@ -16,6 +16,7 @@ class DatabaseManager:
         self.create_table_student()
         self.create_table_item()
         self.create_table_book_item()
+        self.create_table_article_item()
         # Add other item types like self.create_table_magazine_item() or self.create_table_article_item()
         self.create_table_reservation()
         self.create_table_lend()
@@ -66,6 +67,21 @@ class DatabaseManager:
             CREATE TABLE IF NOT EXISTS book_items (
                 id INTEGER PRIMARY KEY,
                 author TEXT NOT NULL,
+                id_item INTEGER NOT NULL,
+                FOREIGN KEY (id_item) REFERENCES items (id)
+            )
+        """)
+        self.conn.commit()
+
+    def create_table_article_item(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS article_items (
+                id INTEGER PRIMARY KEY,
+                abstract TEXT NOT NULL,
+                word_count INTEGER NOT NULL,
+                author TEXT NOT NULL,
+                language TEXT NOT NULL,
+                keywords TEXT NOT NULL,
                 id_item INTEGER NOT NULL,
                 FOREIGN KEY (id_item) REFERENCES items (id)
             )
@@ -198,6 +214,26 @@ class DatabaseManager:
         self.insert('book_items', ['author', 'id_item'], [author, last_inserted_id])
         
         return last_inserted_id
+    
+    def create_article_item(self, release_year, title, abstract, word_count, author, language, keywords):
+        self.insert('items', ['title', 'release_year'], [title, release_year])
+        last_inserted_id = self.cursor.lastrowid
+        self.insert('article_items', ['abstract', 'word_count', 'author', 'language', 'keywords', 'id_item'], [abstract, word_count, author, language, keywords, last_inserted_id])
+
+    def get_article_item(self, item_id):
+        self.cursor.execute("""
+            SELECT items.*, article_items.*
+            FROM items
+            JOIN article_items ON items.id = article_items.id_item
+            WHERE items.id = ?
+        """, (item_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+        
+        return None
 
     def reserve_item(self, item_id, student_id):
         self.cursor.execute("""
@@ -291,6 +327,7 @@ class DatabaseManager:
         self.cursor.execute("DROP TABLE IF EXISTS students")
         self.cursor.execute("DROP TABLE IF EXISTS items")
         self.cursor.execute("DROP TABLE IF EXISTS book_items")
+        self.cursor.execute("DROP TABLE IF EXISTS article_items")
         self.cursor.execute("DROP TABLE IF EXISTS lends")
         self.cursor.execute("DROP TABLE IF EXISTS reservations")
         self.conn.commit()

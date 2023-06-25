@@ -16,6 +16,8 @@ class DatabaseManager:
 
         self.create_table_student()
 
+        self.create_table_book()
+
         # Repeat this for each table you need, adjusting the fields as necessary
 
     def create_table_librarian(self):
@@ -39,6 +41,23 @@ class DatabaseManager:
                 tel TEXT NOT NULL,
                 registration TEXT UNIQUE NOT NULL,
                 fine_delay REAL NOT NULL DEFAULT 0
+            )
+        """)
+        self.conn.commit()
+
+    def create_table_book(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS books (
+                id INTEGER PRIMARY KEY,
+                title TEXT NOT NULL,
+                author TEXT NOT NULL,
+                release_year TEXT NOT NULL,
+                is_lend INTEGER NOT NULL DEFAULT 0,
+                is_reserved INTEGER NOT NULL DEFAULT 0,
+                id_student_lent INTEGER,
+                id_student_reserved INTEGER,
+                FOREIGN KEY (id_student_lent) REFERENCES students (id),
+                FOREIGN KEY (id_student_reserved) REFERENCES students (id)
             )
         """)
         self.conn.commit()
@@ -98,15 +117,38 @@ class DatabaseManager:
         self.insert('librarians', ['name', 'email', 'password'], [
                     name, email, hashed_password])
 
-    def get_librarian(self, email):
-        return self.select_one('librarians', 'email', email)
-
     def create_student(self, name, email, cpf, tel, registration):
         self.insert('students', ['name', 'email', 'cpf', 'tel', 'registration'], [
                     name, email, cpf, tel, registration])
 
+    def get_librarian(self, email):
+        return self.select_one('librarians', 'email', email)
+
     def get_student(self, registration):
         return self.select_one('students', 'registration', registration)
+    
+    def get_book(self, book_id):
+        return self.select_one('books', 'id', book_id)
+    
+    def create_book(self, title, author, release_year):
+        self.insert('books', ['title', 'author', 'release_year'], [
+                    title, author, release_year])
+    
+    def lend_book(self, book_id, student_id):
+        self.cursor.execute("""
+            UPDATE books
+            SET is_lend = 1, id_student_lent = ?
+            WHERE id = ?
+        """, (student_id, book_id))
+        self.conn.commit()
+
+    def reserve_book(self, book_id, student_id):
+        self.cursor.execute("""
+            UPDATE books
+            SET is_reserved = 1, id_student_reserved = ?
+            WHERE id = ?
+        """, (student_id, book_id))
+        self.conn.commit()
 
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
@@ -117,4 +159,5 @@ class DatabaseManager:
     def drop_tables(self):
         self.cursor.execute("DROP TABLE IF EXISTS librarians")
         self.cursor.execute("DROP TABLE IF EXISTS students")
+        self.cursor.execute("DROP TABLE IF EXISTS books")
         self.conn.commit()

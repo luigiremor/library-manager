@@ -17,6 +17,7 @@ class DatabaseManager:
         self.create_table_item()
         self.create_table_book_item()
         self.create_table_article_item()
+        self.create_table_magazine_item()
         # Add other item types like self.create_table_magazine_item() or self.create_table_article_item()
         self.create_table_reservation()
         self.create_table_lend()
@@ -82,6 +83,20 @@ class DatabaseManager:
                 author TEXT NOT NULL,
                 language TEXT NOT NULL,
                 keywords TEXT NOT NULL,
+                id_item INTEGER NOT NULL,
+                FOREIGN KEY (id_item) REFERENCES items (id)
+            )
+        """)
+        self.conn.commit()
+
+    def create_table_magazine_item(self):
+        self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS magazine_items (
+                id INTEGER PRIMARY KEY,
+                publisher TEXT NOT NULL,
+                pages_count INTEGER NOT NULL,
+                language TEXT NOT NULL,
+                genre TEXT NOT NULL,
                 id_item INTEGER NOT NULL,
                 FOREIGN KEY (id_item) REFERENCES items (id)
             )
@@ -220,6 +235,30 @@ class DatabaseManager:
         last_inserted_id = self.cursor.lastrowid
         self.insert('article_items', ['abstract', 'word_count', 'author', 'language', 'keywords', 'id_item'], [abstract, word_count, author, language, keywords, last_inserted_id])
 
+        return last_inserted_id
+
+    def create_magazine_item(self, release_year, title, publisher, pages_count, language, genre):
+        self.insert('items', ['title', 'release_year'], [title, release_year])
+        last_inserted_id = self.cursor.lastrowid
+        self.insert('magazine_items', ['publisher', 'pages_count', 'language', 'genre', 'id_item'], [publisher, pages_count, language, genre, last_inserted_id])
+
+        return last_inserted_id
+
+    def get_magazine_item(self, item_id):
+        self.cursor.execute("""
+            SELECT items.*, magazine_items.*
+            FROM items
+            JOIN magazine_items ON items.id = magazine_items.id_item
+            WHERE items.id = ?
+        """, (item_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+        
+        return None
+
     def get_article_item(self, item_id):
         self.cursor.execute("""
             SELECT items.*, article_items.*
@@ -328,6 +367,7 @@ class DatabaseManager:
         self.cursor.execute("DROP TABLE IF EXISTS items")
         self.cursor.execute("DROP TABLE IF EXISTS book_items")
         self.cursor.execute("DROP TABLE IF EXISTS article_items")
+        self.cursor.execute("DROP TABLE IF EXISTS magazine_items")
         self.cursor.execute("DROP TABLE IF EXISTS lends")
         self.cursor.execute("DROP TABLE IF EXISTS reservations")
         self.conn.commit()

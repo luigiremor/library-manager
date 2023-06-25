@@ -3,6 +3,7 @@ from database.database_manager import DatabaseManager
 from model.article import Article
 from model.book import Book
 from model.librarian import Librarian
+from model.magazine import Magazine
 from model.student import Student
 
 
@@ -20,6 +21,7 @@ class TestDatabaseManager(unittest.TestCase):
         self.student = Student('Luigi', 'luigi@gmail.com', '12345678910', '123456789', '123456789')
         self.book = Book('The Lord of the Rings', 'J. R. R. Tolkien', False, False, '1954')
         self.article = Article('The Power of Habit', '2012', False, False, 'Lalalalala', '371', 'Luigi', 'English', 'Habit, Self-help, Psychology')
+        self.magazine = Magazine('Superinteressante', '2019', False, False, 'Abril', '100', 'Portuguese', 'Science')
         self.librarian = Librarian('Luigi', 'luigi@gmail.com')
         self.password = '123456'
 
@@ -163,7 +165,23 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.return_item(article_db['id'])
         article_db = self.db.get_article_item(1)
         self.assertFalse(article_db['is_lend'])
-        
+
+    def test_create_and_get_magazine(self):
+        self.db.create_magazine_item(release_year=self.magazine.release_year,
+                                    title=self.magazine.title,
+                                    publisher=self.magazine.publisher,
+                                    pages_count=self.magazine.pages_count,
+                                    genre=self.magazine.genre,
+                                    language=self.magazine.language)  
+        magazine_db = self.db.get_magazine_item(1)
+        self.assertEqual(self.magazine.title, magazine_db['title'])
+        self.assertEqual(self.magazine.release_year, magazine_db['release_year'])
+        self.assertEqual(int(self.magazine.pages_count), magazine_db['pages_count'])
+        self.assertEqual(self.magazine.publisher, magazine_db['publisher'])
+        self.assertEqual(self.magazine.genre, magazine_db['genre'])
+        self.assertEqual(self.magazine.language, magazine_db['language'])
+        self.assertEqual(self.magazine.is_lend, magazine_db['is_lend'])
+        self.assertEqual(self.magazine.is_reserved, magazine_db['is_reserved'])
 
 if __name__ == '__main__':
     unittest.main()

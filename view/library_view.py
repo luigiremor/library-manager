@@ -1,26 +1,56 @@
 import tkinter
 import customtkinter
+from view.menu_auth import MenuAuth
+from view.menu_collection import MenuCollection
+from view.menu_lend import MenuLend
+from view.menu_students import MenuStudents
 
-class LibraryView:
+
+class LibraryView(customtkinter.CTk):
     def __init__(self):
+        super().__init__()
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
-        self.window = customtkinter.CTk()
-        self.window.title("Library Management System")
-        self.window.geometry("1000x650")
-        self.window.resizable(False, False)
-        self.window.mainloop()
+        self.title("Library - System")
+        self.geometry("1000x650")
+        self.resizable(False, False)
+        
+        self.menu_auth = MenuAuth(self)
+        self.menu_collection = MenuCollection(self)
+        self.menu_lend = MenuLend(self)
+        self.menu_students = MenuStudents(self)
 
-    def menu_auth():
-        pass
+        self.menu_auth.grid(row=0, column=0)
+        self.menu_collection.grid(row=0, column=0)
+        self.menu_lend.grid(row=0, column=0)
+        self.menu_students.grid(row=0, column=0)
 
-    def menu_collection():
-        pass
+        self.show_menu_auth()
+    
 
-    def menu_lend():
-        pass
+    def show_menu_auth(self):
+        self.menu_collection.grid_remove()
+        self.menu_lend.grid_remove()
+        self.menu_students.grid_remove()
+        self.menu_auth.grid()
+    
+    
+    def show_menu_collection(self):
+        self.menu_auth.grid_remove()
+        self.menu_lend.grid_remove()
+        self.menu_students.grid_remove()
+        self.menu_collection.grid()
+    
 
-    def menu_students():
-        pass
+    def show_menu_lend(self):
+        self.menu_auth.grid_remove()
+        self.menu_collection.grid_remove()
+        self.menu_students.grid_remove()
+        self.menu_lend.grid()
+    
 
-a = LibraryView()
+    def show_menu_students(self):
+        self.menu_auth.grid_remove()
+        self.menu_collection.grid_remove()
+        self.menu_lend.grid_remove()
+        self.menu_students.grid()

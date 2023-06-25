@@ -116,6 +116,7 @@ class DatabaseManager:
         hashed_password = self.hash_password(password)
         self.insert('librarians', ['name', 'email', 'password'], [
                     name, email, hashed_password])
+        return True
 
     def create_student(self, name, email, cpf, tel, registration):
         self.insert('students', ['name', 'email', 'cpf', 'tel', 'registration'], [

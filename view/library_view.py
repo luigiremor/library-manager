@@ -7,6 +7,9 @@ class LibraryView:
         customtkinter.set_default_color_theme("dark-blue")
         self.window = customtkinter.CTk()
         self.window.title("Library Management System")
+        self.window.geometry("1000x650")
+        self.window.resizable(False, False)
+        self.window.mainloop()
 
     def menu_auth():
         pass
@@ -19,3 +22,5 @@ class LibraryView:
 
     def menu_students():
         pass
+
+a = LibraryView()

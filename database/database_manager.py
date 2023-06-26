@@ -134,6 +134,13 @@ class DatabaseManager(BaseTableManager):
 
     # CRUD
 
+    def login(self, email, password):
+        if not self.is_email_registered(email):
+            return False
+
+        hashed_password = self.get_librarian_password(email)
+        return Authenticator.verify_password(hashed_password, password)
+
     def get_librarian_password(self, email):
         password = self.select_one('librarians', 'email', email)['password']
         return password
@@ -159,34 +166,37 @@ class DatabaseManager(BaseTableManager):
 
     def get_student_by_registration(self, registration):
         return self.select_one('students', 'registration', registration)
-    
+
     def get_all_students(self):
         return self.select_all('students')
-    
+
     def create_book_item(self, title, author, release_year):
         self.insert('items', ['title', 'release_year'], [title, release_year])
         last_inserted_id = self.cursor.lastrowid
-        self.insert('book_items', ['author', 'id_item'], [author, last_inserted_id])
-        
+        self.insert('book_items', ['author', 'id_item'], [
+                    author, last_inserted_id])
+
         return last_inserted_id
-    
+
     def create_article_item(self, release_year, title, abstract, word_count, author, language, keywords):
         self.insert('items', ['title', 'release_year'], [title, release_year])
         last_inserted_id = self.cursor.lastrowid
-        self.insert('article_items', ['abstract', 'word_count', 'author', 'language', 'keywords', 'id_item'], [abstract, word_count, author, language, keywords, last_inserted_id])
+        self.insert('article_items', ['abstract', 'word_count', 'author', 'language', 'keywords', 'id_item'], [
+                    abstract, word_count, author, language, keywords, last_inserted_id])
 
         return last_inserted_id
 
     def create_magazine_item(self, release_year, title, publisher, pages_count, language, genre):
         self.insert('items', ['title', 'release_year'], [title, release_year])
         last_inserted_id = self.cursor.lastrowid
-        self.insert('magazine_items', ['publisher', 'pages_count', 'language', 'genre', 'id_item'], [publisher, pages_count, language, genre, last_inserted_id])
+        self.insert('magazine_items', ['publisher', 'pages_count', 'language', 'genre', 'id_item'], [
+                    publisher, pages_count, language, genre, last_inserted_id])
 
         return last_inserted_id
 
     def get_all_items(self):
         return self.select_all('items')
-    
+
     def get_all_items_by_type(self, item_type):
         self.cursor.execute(f"""
             SELECT items.*, {item_type}_items.*
@@ -198,7 +208,7 @@ class DatabaseManager(BaseTableManager):
         if result:
             columns = [column[0] for column in self.cursor.description]
             return [dict(zip(columns, row)) for row in result]
-        
+
         return None
 
     def get_book_item_by_id(self, item_id):
@@ -213,7 +223,7 @@ class DatabaseManager(BaseTableManager):
         if result:
             columns = [column[0] for column in self.cursor.description]
             return dict(zip(columns, result))
-        
+
         return None
 
     def get_magazine_item_by_id(self, item_id):
@@ -228,7 +238,7 @@ class DatabaseManager(BaseTableManager):
         if result:
             columns = [column[0] for column in self.cursor.description]
             return dict(zip(columns, result))
-        
+
         return None
 
     def get_article_item_by_id(self, item_id):
@@ -243,7 +253,7 @@ class DatabaseManager(BaseTableManager):
         if result:
             columns = [column[0] for column in self.cursor.description]
             return dict(zip(columns, result))
-        
+
         return None
 
     def update_book_item(self, item_id, title, author, release_year):
@@ -308,7 +318,7 @@ class DatabaseManager(BaseTableManager):
 
         reservation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         status = 'reserved'
-        self.insert('reservations', ['reservation_date', 'status', 'id_student', 'id_item'], 
+        self.insert('reservations', ['reservation_date', 'status', 'id_student', 'id_item'],
                     [reservation_date, status, student_id, item_id])
 
         self.conn.commit()
@@ -321,9 +331,10 @@ class DatabaseManager(BaseTableManager):
         """, (student_id, item_id))
 
         lend_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return_date = (datetime.now() + timedelta(days=7)).strftime("%Y-%m-%d %H:%M:%S")
+        return_date = (datetime.now() + timedelta(days=7)
+                       ).strftime("%Y-%m-%d %H:%M:%S")
         status = 'lent'
-        self.insert('lends', ['lend_date', 'return_date','status', 'id_student', 'id_item'], 
+        self.insert('lends', ['lend_date', 'return_date', 'status', 'id_student', 'id_item'],
                     [lend_date, return_date, status, student_id, item_id])
 
         self.conn.commit()
@@ -383,7 +394,7 @@ class DatabaseManager(BaseTableManager):
             return students
 
         return None
-        
+
     def get_student_who_reserved_item(self, item_id):
         self.cursor.execute("""
             SELECT students.* 
@@ -396,7 +407,7 @@ class DatabaseManager(BaseTableManager):
         if result:
             columns = [column[0] for column in self.cursor.description]
             return dict(zip(columns, result))
-        
+
         return None
 
     def get_all_students_who_reserved_item(self):
@@ -414,9 +425,9 @@ class DatabaseManager(BaseTableManager):
             for row in result:
                 students.append(dict(zip(columns, row)))
             return students
-        
+
         return None
-    
+
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
 

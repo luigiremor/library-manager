@@ -257,5 +257,12 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertEqual('Novo genero', magazine_db['genre'])
         self.assertEqual('Novo idioma', magazine_db['language'])
 
+    def test_delete_item(self):
+        self.db.create_book_item(self.book.title, self.book.author, self.book.release_year)
+        book_db = self.db.get_book_item_by_id(1)
+        self.db.delete_item(book_db['id'])
+        book_db = self.db.get_book_item_by_id(1)
+        self.assertIsNone(book_db)
+
 if __name__ == '__main__':
     unittest.main()

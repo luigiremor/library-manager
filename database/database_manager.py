@@ -274,6 +274,13 @@ class DatabaseManager(BaseTableManager):
 
         self.conn.commit()
 
+    def delete_item(self, item_id):
+        self.cursor.execute("""
+            DELETE FROM items
+            WHERE id = ?
+        """, (item_id,))
+
+        self.conn.commit()
 
     def reserve_item(self, item_id, student_id):
         self.cursor.execute("""

@@ -1,10 +1,9 @@
-import tkinter
+# LibraryView.py
 import customtkinter
 from controller.library_controller import LibraryController
 from view.menu_auth_view import MenuAuth
-from view.menu_collection_view import MenuCollection
-from view.menu_lend_view import MenuLend
-from view.menu_students_view import MenuStudents
+from view.menu_main import MenuMain
+from view.menu_register import MenuRegister
 
 
 class LibraryView(customtkinter.CTk):
@@ -16,42 +15,32 @@ class LibraryView(customtkinter.CTk):
         self.title("Library - System")
         self.geometry("1000x650")
         self.resizable(False, False)
-        self.menu_auth = MenuAuth(self)
-        self.menu_collection = MenuCollection(self)
-        self.menu_students = MenuStudents(self)
-        self.menu_lend = MenuLend(self)
 
-        self.menu_auth.place(x=350, y=300)
-        self.menu_collection.grid(row=0, column=0)
-        self.menu_lend.grid(row=0, column=0)
-        self.menu_students.grid(row=0, column=0)
+        self.views = {}
 
-        self.show_menu_auth()
-    
+        self.show_view('menu_auth')
 
-    def show_menu_auth(self):
-        self.menu_collection.destroy()
-        self.menu_lend.destroy()
-        self.menu_students.destroy()
-        self.menu_auth.place()
-    
+    def get_view(self, view_name):
+        if view_name not in self.views:
+            if view_name == 'menu_auth':
+                self.views[view_name] = MenuAuth(self, self.controller)
+            elif view_name == 'menu_register':
+                self.views[view_name] = MenuRegister(self, self.controller)
+            elif view_name == 'menu_main':
+                self.views[view_name] = MenuMain(self, self.controller)
+            # Add additional views here
+            else:
+                raise ValueError(f'No such view: {view_name}')
 
-    def show_menu_collection(self):
-        self.menu_auth.destroy()
-        self.menu_lend.destroy()
-        self.menu_students.destroy()
-        self.menu_collection.place()
-    
+        return self.views[view_name]
 
-    def show_menu_lend(self):
-        self.menu_auth.destroy()
-        self.menu_collection.destroy()
-        self.menu_students.destroy()
-        self.menu_lend.place()
-    
+    def show_view(self, view_name):
+        if hasattr(self, 'current_view'):
+            self.current_view.pack_forget()
 
-    def show_menu_students(self):
-        self.menu_auth.destroy()
-        self.menu_collection.destroy()
-        self.menu_lend.destroy()
-        self.menu_students.place()
+        self.current_view = self.get_view(view_name)
+        self.current_view.pack()
+
+    def destroy(self):
+        self.controller.close_connection()
+        super().destroy()

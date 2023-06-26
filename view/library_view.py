@@ -21,7 +21,7 @@ class LibraryView(customtkinter.CTk):
         self.menu_students = MenuStudents(self)
         self.menu_lend = MenuLend(self)
 
-        self.menu_auth.grid(row=0, column=0)
+        self.menu_auth.place(x=340, y=300)
         self.menu_collection.grid(row=0, column=0)
         self.menu_lend.grid(row=0, column=0)
         self.menu_students.grid(row=0, column=0)
@@ -31,28 +31,28 @@ class LibraryView(customtkinter.CTk):
     
 
     def show_menu_auth(self):
-        self.menu_collection.grid_remove()
-        self.menu_lend.grid_remove()
-        self.menu_students.grid_remove()
-        self.menu_auth.grid()
+        self.menu_collection.destroy()
+        self.menu_lend.destroy()
+        self.menu_students.destroy()
+        self.menu_auth.place()
     
 
     def show_menu_collection(self):
-        self.menu_auth.grid_remove()
-        self.menu_lend.grid_remove()
-        self.menu_students.grid_remove()
-        self.menu_collection.grid()
+        self.menu_auth.destroy()
+        self.menu_lend.destroy()
+        self.menu_students.destroy()
+        self.menu_collection.place()
     
 
     def show_menu_lend(self):
-        self.menu_auth.grid_remove()
-        self.menu_collection.grid_remove()
-        self.menu_students.grid_remove()
-        self.menu_lend.grid()
+        self.menu_auth.destroy()
+        self.menu_collection.destroy()
+        self.menu_students.destroy()
+        self.menu_lend.place()
     
 
     def show_menu_students(self):
-        self.menu_auth.grid_remove()
-        self.menu_collection.grid_remove()
-        self.menu_lend.grid_remove()
-        self.menu_students.grid()
+        self.menu_auth.destroy()
+        self.menu_collection.destroy()
+        self.menu_lend.destroy()
+        self.menu_students.place()

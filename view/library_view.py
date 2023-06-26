@@ -1,5 +1,6 @@
 import tkinter
 import customtkinter
+from controller.library_controller import LibraryController
 from view.menu_auth_view import MenuAuth
 from view.menu_collection_view import MenuCollection
 from view.menu_lend_view import MenuLend
@@ -9,12 +10,12 @@ from view.menu_students_view import MenuStudents
 class LibraryView(customtkinter.CTk):
     def __init__(self):
         super().__init__()
+        self.controller = LibraryController('library.db')
         customtkinter.set_appearance_mode("dark")
         customtkinter.set_default_color_theme("dark-blue")
         self.title("Library - System")
         self.geometry("1000x650")
         self.resizable(False, False)
-        
         self.menu_auth = MenuAuth(self)
         self.menu_collection = MenuCollection(self)
         self.menu_students = MenuStudents(self)

@@ -1,7 +1,11 @@
 
 
+from view.library_view import LibraryView
+
+
 def main():
-    print('Hello World')
+    view = LibraryView()
+    view.mainloop()
 
 
 if __name__ == '__main__':

@@ -184,6 +184,23 @@ class DatabaseManager(BaseTableManager):
 
         return last_inserted_id
 
+    def get_all_items(self):
+        return self.select_all('items')
+    
+    def get_all_items_by_type(self, item_type):
+        self.cursor.execute(f"""
+            SELECT items.*, {item_type}_items.*
+            FROM items
+            JOIN {item_type}_items ON items.id = {item_type}_items.id_item
+        """)
+        result = self.cursor.fetchall()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return [dict(zip(columns, row)) for row in result]
+        
+        return None
+
     def get_book_item_by_id(self, item_id):
         self.cursor.execute("""
             SELECT items.*, book_items.author 

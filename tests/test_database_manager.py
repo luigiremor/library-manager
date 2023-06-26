@@ -264,5 +264,50 @@ class TestDatabaseManager(unittest.TestCase):
         book_db = self.db.get_book_item_by_id(1)
         self.assertIsNone(book_db)
 
+    def test_get_all_items(self):
+        self.db.create_book_item(self.book.title, self.book.author, self.book.release_year)
+        self.db.create_article_item(
+                                    release_year=self.article.release_year,
+                                    title=self.article.title,
+                                    abstract=self.article.abstract,
+                                    word_count=self.article.word_count,
+                                    author=self.article.author,
+                                    language=self.article.language,
+                                    keywords=self.article.keywords)
+        self.db.create_magazine_item(release_year=self.magazine.release_year,
+                                    title=self.magazine.title,
+                                    publisher=self.magazine.publisher,
+                                    pages_count=self.magazine.pages_count,
+                                    genre=self.magazine.genre,
+                                    language=self.magazine.language)
+        items_db = self.db.get_all_items()
+        self.assertEqual(3, len(items_db))
+
+    def test_get_all_items_by_type(self):
+        self.db.create_book_item(self.book.title, self.book.author, self.book.release_year)
+        self.db.create_article_item(
+                                    release_year=self.article.release_year,
+                                    title=self.article.title,
+                                    abstract=self.article.abstract,
+                                    word_count=self.article.word_count,
+                                    author=self.article.author,
+                                    language=self.article.language,
+                                    keywords=self.article.keywords)
+        self.db.create_magazine_item(release_year=self.magazine.release_year,
+                                    title=self.magazine.title,
+                                    publisher=self.magazine.publisher,
+                                    pages_count=self.magazine.pages_count,
+                                    genre=self.magazine.genre,
+                                    language=self.magazine.language)
+        items_db = self.db.get_all_items_by_type('book')
+        print(items_db)
+        self.assertEqual(1, len(items_db))
+        items_db = self.db.get_all_items_by_type('article')
+        print(items_db)
+        self.assertEqual(1, len(items_db))
+        items_db = self.db.get_all_items_by_type('magazine')
+        print(items_db)
+        self.assertEqual(1, len(items_db))
+
 if __name__ == '__main__':
     unittest.main()

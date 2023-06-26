@@ -9,14 +9,32 @@ class LibraryController:
         self.db = DatabaseManager(db_name)
 
     def login(self, email, password):
-        return self.db.login(email, password)
+        is_logged_in = self.db.login(email, password)
+        if is_logged_in:
+            return True
+        else:
+            messagebox.showerror("Error", "Invalid email or password")
+            return False
 
     def create_librarian(self, name, email, password):
-        return self.db.create_librarian(name, email, password)
+        is_created = self.db.create_librarian(name, email, password)
+
+        if is_created:
+            messagebox.showinfo("Success", "Librarian created successfully")
+        else:
+            messagebox.showerror(
+                "Error", "Librarian with this email already exists")
+
+        return is_created
 
     def create_student(self, name, email, cpf, tel, registration):
-        self.db.create_student(name, email, cpf, tel, registration)
-        messagebox.showinfo("Success", "Student created successfully")
+        is_created = self.db.create_student(
+            name, email, cpf, tel, registration)
+        if is_created:
+            messagebox.showinfo("Success", "Student created successfully")
+        else:
+            messagebox.showerror(
+                "Error", "Student with this registration already exists")
 
     def get_all_students(self):
         return self.db.get_all_students()

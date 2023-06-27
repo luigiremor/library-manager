@@ -138,3 +138,11 @@ class CTkListbox(customtkinter.CTkScrollableFrame):
                 i.configure(font=self.font)
 
         super().configure(**kwargs)
+
+    def clear(self):
+        """ clear the listbox """
+        for i in self.buttons.values():
+            i.destroy()
+        self.buttons = {}
+        self.selected = None
+        self.selections = []

@@ -5,6 +5,7 @@ from view.menu_auth_view import MenuAuth
 from view.menu_collection_view import MenuCollection
 from view.menu_main import MenuMain
 from view.menu_register import MenuRegister
+from view.menu_students_view import MenuStudents
 
 
 class LibraryView(customtkinter.CTk):
@@ -19,6 +20,7 @@ class LibraryView(customtkinter.CTk):
 
         self.views = {}
 
+        
         self.show_view('menu_auth')
 
     def get_view(self, view_name):
@@ -29,6 +31,8 @@ class LibraryView(customtkinter.CTk):
                 self.views[view_name] = MenuRegister(self, self.controller)
             elif view_name == 'menu_main':
                 self.views[view_name] = MenuMain(self, self.controller)
+            elif view_name == 'menu_students':
+                self.views[view_name] = MenuStudents(self, self.controller)
             elif view_name == 'menu_collection':
                 self.views[view_name] = MenuCollection(self, self.controller)
             # Add additional views here

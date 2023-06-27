@@ -51,6 +51,9 @@ class LibraryController:
     def get_all_items_by_type(self, item_type):
         return self.db.get_all_items_by_type(item_type)
 
+    def get_complete_item_details(self, item_id, item_type):
+        return self.db.get_complete_item_details_by_id(item_id, item_type)
+
     def update_book_item(self, item_id, title, author, release_year):
         self.db.update_book_item(item_id, title, author, release_year)
         messagebox.showinfo(

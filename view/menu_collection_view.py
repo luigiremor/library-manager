@@ -32,7 +32,7 @@ class MenuCollection(ctk.CTkFrame):
             self.buttons_frame, values=['Book', 'Magazine', 'Article'])
 
         self.list_type_combobox.pack(side=tk.LEFT, padx=5)
-        self.list_type_combobox.set('Books')
+        self.list_type_combobox.set('Book')
 
         self.refresh_button = ctk.CTkButton(
             self.buttons_frame, text='Refresh', command=lambda: self.refresh_items(self.list_type_combobox.get().lower()))
@@ -57,29 +57,10 @@ class MenuCollection(ctk.CTkFrame):
             self, width=200, height=300, command=self.show_details)
         self.items_listbox.pack(fill=tk.BOTH, expand=True)
 
-        # self.car_treeview = tk.Treeview(self, columns=(
-        #     "id", "brand", "model", "year", "price", "status"))
-        # self.car_treeview['show'] = 'headings'
-        # self.car_treeview.pack()
-
-        # self.car_treeview.heading("id", text="ID")
-        # self.car_treeview.heading("brand", text="Brand")
-        # self.car_treeview.heading("model", text="Model")
-        # self.car_treeview.heading("year", text="Year")
-        # self.car_treeview.heading("price", text="Price")
-        # self.car_treeview.heading("status", text="Status")
-
-        # self.car_treeview.column("id")
-        # self.car_treeview.column("brand")
-        # self.car_treeview.column("model")
-        # self.car_treeview.column("year")
-        # self.car_treeview.column("price")
-        # self.car_treeview.column("status")
-
     def refresh_items(self, type_item):
         items = self.controller.get_all_items_by_type(type_item)
         for index, item in enumerate(items):
-            title = item['title']
+            title = str(item['id']) + ' - ' + item['title']
             self.items_listbox.insert(index, title)
 
     def new_item(self):
@@ -87,7 +68,6 @@ class MenuCollection(ctk.CTkFrame):
 
     def update_item(self):
         selected = self.items_listbox.get()
-        print(selected)
         if selected:
             UpdateItemForm(self, selected)
 
@@ -97,15 +77,20 @@ class MenuCollection(ctk.CTkFrame):
             self.controller.delete_item(selected)
             self.refresh_items()
 
-    def show_details(self, item):
+    def show_details(self):
         # Clear the details frame
         for widget in self.details_frame.winfo_children():
             widget.destroy()
 
+        selected = self.items_listbox.get()
+        item_type = self.list_type_combobox.get().lower()
+        item_id = selected.split(' - ')[0]
+
         # Display the details of the selected item
-        if item:
+        if item_id:
             # Assuming get_item_details is a method in the controller
-            details = self.controller.get_item_details(item)
+            details = self.controller.get_complete_item_details(
+                item_id, item_type)
             for key, value in details.items():
                 label = ctk.CTkLabel(self.details_frame,
                                      text=f"{key}: {value}")

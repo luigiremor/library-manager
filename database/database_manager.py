@@ -216,6 +216,21 @@ class DatabaseManager(BaseTableManager):
 
         return None
 
+    def get_complete_item_details_by_id(self, item_id, item_type):
+        self.cursor.execute(f"""
+            SELECT items.*, {item_type}_items.*
+            FROM items
+            JOIN {item_type}_items ON items.id = {item_type}_items.id_item
+            WHERE items.id = ?
+        """, (item_id,))
+        result = self.cursor.fetchone()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            return dict(zip(columns, result))
+
+        return None
+
     def get_book_item_by_id(self, item_id):
         self.cursor.execute("""
             SELECT items.*, book_items.author 

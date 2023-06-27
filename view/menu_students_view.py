@@ -2,6 +2,7 @@ import tkinter as tk
 import customtkinter as ctk
 from controller.library_controller import LibraryController
 from components.ctk_listbox import CTkListbox
+from tkinter import messagebox
 
 
 class MenuStudents(ctk.CTkFrame):
@@ -103,9 +104,26 @@ class NewStudentForm(ctk.CTkToplevel):
         self.button_frame = ctk.CTkFrame(self)
         self.button_frame.grid(row=6, column=0, columnspan=2, padx=10, pady=5)
 
-        self.submit_button = ctk.CTkButton(self.button_frame, text="Add", command=None)
+        self.submit_button = ctk.CTkButton(self.button_frame, text="Add", command=self.create_student)
         self.submit_button.pack(side=tk.LEFT, padx=5)
 
         self.cancel_button = ctk.CTkButton(self.button_frame, text="Cancel", command=self.destroy)
         self.cancel_button.pack(side=tk.LEFT, padx=5)
+
+
+    def create_student(self):
+        name = self.name_entry.get()
+        email = self.email_entry.get()
+        cpf = self.cpf_entry.get()
+        tel = self.tel_entry.get()
+        registration = self.registration_entry.get()
+        if name and email and cpf and tel and registration:
+            self.controller.create_student(name, email, cpf, tel, registration)
+            self.parent.refresh_students()
+            self.destroy()
+        else:
+            messagebox.showerror('Error', 'Fill all fields')
+ 
+    
+
     

@@ -12,25 +12,34 @@ class MenuMain(ctk.CTkFrame):
 
     def navbar(self):
         self.btn_lend = ctk.CTkButton(
-            self, text="Lend", command=None)
+            self, text="Home", command=self.go_home)
         self.btn_lend.grid(row=0, column=0, padx=10, pady=10)
 
-        self.btn_return = ctk.CTkButton(
-            self, text="Return", command=None)
-        self.btn_return.grid(row=0, column=1, padx=10, pady=10)
+        self.btn_lend = ctk.CTkButton(
+            self, text="Lend", command=None)
+        self.btn_lend.grid(row=0, column=1, padx=10, pady=10)
+
+        self.btn_collection = ctk.CTkButton(
+            self, text="Collection", command=self.go_collection)
+        self.btn_collection.grid(row=0, column=2, padx=10, pady=10)
 
         self.btn_search = ctk.CTkButton(
             self, text="Search", command=None)
-        self.btn_search.grid(row=0, column=2, padx=10, pady=10)
+        self.btn_search.grid(row=0, column=3, padx=10, pady=10)
 
         self.btn_add = ctk.CTkButton(
             self, text="Add", command=None)
-        self.btn_add.grid(row=0, column=3, padx=10, pady=10)
-
-        self.btn_remove = ctk.CTkButton(
-            self, text="Remove", command=None)
-        self.btn_remove.grid(row=0, column=4, padx=10, pady=10)
+        self.btn_add.grid(row=0, column=4, padx=10, pady=10)
 
         self.btn_logout = ctk.CTkButton(
-            self, text="Logout", command=None)
-        self.btn_logout.grid(row=0, column=5, padx=10, pady=10)
+            self, text="Logout", command=self.exit)
+        self.btn_logout.grid(row=0, column=6, padx=10, pady=10)
+
+    def go_home(self):
+        self.parent.show_view("menu_main")
+
+    def exit(self):
+        self.parent.show_view("menu_auth")
+
+    def go_collection(self):
+        self.parent.show_view("menu_collection")

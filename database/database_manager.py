@@ -160,6 +160,11 @@ class DatabaseManager(BaseTableManager):
     def create_student(self, name, email, cpf, tel, registration):
         self.insert('students', ['name', 'email', 'cpf', 'tel', 'registration'], [
                     name, email, cpf, tel, registration])
+        is_student_created = self.select_one(
+            'students', 'registration', registration) is not None
+        if is_student_created:
+            return True
+        return False
 
     def get_librarian_by_email(self, email):
         return self.select_one('librarians', 'email', email)

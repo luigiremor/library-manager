@@ -1,3 +1,4 @@
+from tkinter import messagebox
 import customtkinter as ctk
 import tkinter as tk
 from components.ctk_listbox import CTkListbox
@@ -59,8 +60,9 @@ class MenuCollection(ctk.CTkFrame):
 
     def refresh_items(self, type_item):
         items = self.controller.get_all_items_by_type(type_item)
+        self.items_listbox.clear()
         for index, item in enumerate(items):
-            title = str(item['id']) + ' - ' + item['title']
+            title = str(item['id_item']) + ' - ' + item['title']
             self.items_listbox.insert(index, title)
 
     def new_item(self):
@@ -86,15 +88,19 @@ class MenuCollection(ctk.CTkFrame):
         item_type = self.list_type_combobox.get().lower()
         item_id = selected.split(' - ')[0]
 
-        # Display the details of the selected item
         if item_id:
-            # Assuming get_item_details is a method in the controller
             details = self.controller.get_complete_item_details(
                 item_id, item_type)
             for key, value in details.items():
                 label = ctk.CTkLabel(self.details_frame,
                                      text=f"{key}: {value}")
                 label.pack()
+
+    # def key_to_string(self, key):
+    #     return key.replace('_', ' ').capitalize()
+
+    # def string_to_key(self, string):
+    #     return string.replace(' ', '_').lower()
 
 
 class NewItemForm(ctk.CTkToplevel):
@@ -157,18 +163,123 @@ class NewItemForm(ctk.CTkToplevel):
         self.create_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def magazine_form(self):
-        # your code for creating form for magazine
-        pass
+        self.title_label = ctk.CTkLabel(self, text="Title")
+        self.title_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.title_entry = ctk.CTkEntry(self)
+        self.title_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.release_year_label = ctk.CTkLabel(self, text="Release Year")
+        self.release_year_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.release_year_entry = ctk.CTkEntry(self)
+        self.release_year_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.publisher_label = ctk.CTkLabel(self, text="Publisher")
+        self.publisher_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.publisher_entry = ctk.CTkEntry(self)
+        self.publisher_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.pages_count_label = ctk.CTkLabel(self, text="Pages Count")
+        self.pages_count_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.pages_count_entry = ctk.CTkEntry(self)
+        self.pages_count_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.language_label = ctk.CTkLabel(self, text="Language")
+        self.language_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.language_entry = ctk.CTkEntry(self)
+        self.language_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.genre_label = ctk.CTkLabel(self, text="Genre")
+        self.genre_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.genre_entry = ctk.CTkEntry(self)
+        self.genre_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.create_button = ctk.CTkButton(
+            self, text="Create", command=self.create_magazine_item)
+        self.create_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def article_form(self):
-        # your code for creating form for article
-        pass
+        self.title_label = ctk.CTkLabel(self, text="Title")
+        self.title_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.title_entry = ctk.CTkEntry(self)
+        self.title_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.release_year_label = ctk.CTkLabel(self, text="Release Year")
+        self.release_year_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.release_year_entry = ctk.CTkEntry(self)
+        self.release_year_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.abstract_label = ctk.CTkLabel(self, text="Abstract")
+        self.abstract_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.abstract_entry = ctk.CTkEntry(self)
+        self.abstract_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.word_count_label = ctk.CTkLabel(self, text="Word Count")
+        self.word_count_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.word_count_entry = ctk.CTkEntry(self)
+        self.word_count_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.author_label = ctk.CTkLabel(self, text="Author")
+        self.author_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.author_entry = ctk.CTkEntry(self)
+        self.author_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.language_label = ctk.CTkLabel(self, text="Language")
+        self.language_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.language_entry = ctk.CTkEntry(self)
+        self.language_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.keywords_label = ctk.CTkLabel(self, text="Keywords")
+        self.keywords_label.pack(fill=tk.X, padx=5, pady=5)
+
+        self.keywords_entry = ctk.CTkEntry(self)
+        self.keywords_entry.pack(fill=tk.X, padx=5, pady=5)
+
+        self.create_button = ctk.CTkButton(
+            self, text="Create", command=self.create_article_item)
+        self.create_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def create_book_item(self):
         title = self.title_entry.get()
         release_year = self.release_year_entry.get()
         author = self.author_entry.get()
         self.controller.create_book_item(title, author, release_year)
+        self.destroy()
+
+    def create_magazine_item(self):
+        title = self.title_entry.get()
+        release_year = self.release_year_entry.get()
+        publisher = self.publisher_entry.get()
+        pages_count = self.pages_count_entry.get()
+        language = self.language_entry.get()
+        genre = self.genre_entry.get()
+        messagebox.showinfo(
+            "Info", f'{title} {release_year} {publisher} {pages_count} {language} {genre}')
+        self.controller.create_magazine_item(
+            title, release_year, publisher, pages_count, language, genre)
+        self.destroy()
+
+    def create_article_item(self):
+        title = self.title_entry.get()
+        release_year = self.release_year_entry.get()
+        abstract = self.abstract_entry.get()
+        word_count = self.word_count_entry.get()
+        author = self.author_entry.get()
+        language = self.language_entry.get()
+        keywords = self.keywords_entry.get()
+        self.controller.create_article_item(
+            title, release_year, abstract, word_count, author, language, keywords)
         self.destroy()
 
 

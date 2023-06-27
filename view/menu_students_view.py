@@ -34,7 +34,7 @@ class MenuStudents(ctk.CTkFrame):
         self.new_button.pack(side=tk.LEFT, padx=5)
 
         self.update_button = ctk.CTkButton(
-            self.buttons_frame, text='Update Student', command=None)
+            self.buttons_frame, text='Update Student', command=self.update_student)
         self.update_button.pack(side=tk.LEFT, padx=5)
 
         self.delete_button = ctk.CTkButton(
@@ -60,6 +60,19 @@ class MenuStudents(ctk.CTkFrame):
     
     def new_student(self):
         NewStudentForm(self)
+
+    def update_student(self):
+        selected = self.students_listbox.get()
+        if selected:
+            UpdateStudentForm(self, selected)
+    
+
+    def delete_student(self):
+        pass
+
+
+    def show_details(self):
+        pass
 
 
 class NewStudentForm(ctk.CTkToplevel):
@@ -123,7 +136,52 @@ class NewStudentForm(ctk.CTkToplevel):
             self.destroy()
         else:
             messagebox.showerror('Error', 'Fill all fields')
- 
-    
 
-    
+
+
+class UpdateStudentForm(ctk.CTkToplevel):
+    def __init__(self, parent, student):
+        super().__init__(parent)
+        self.parent = parent
+        self.controller = parent.controller
+        self.title = 'Update Student'
+        self.student = student
+
+        self.name_label = ctk.CTkLabel(self, text="Name")
+        self.name_label.grid(row=1, column=0, padx=10, pady=5)
+
+        self.name_entry = ctk.CTkEntry(self)
+        self.name_entry.grid(row=1, column=1, padx=10, pady=5)
+
+        self.email_label = ctk.CTkLabel(self, text="Email")
+        self.email_label.grid(row=2, column=0, padx=10, pady=5)
+
+        self.email_entry = ctk.CTkEntry(self)
+        self.email_entry.grid(row=2, column=1, padx=10, pady=5)
+
+        self.cpf_label = ctk.CTkLabel(self, text="CPF")
+        self.cpf_label.grid(row=3, column=0, padx=10, pady=5)
+
+        self.cpf_entry = ctk.CTkEntry(self)
+        self.cpf_entry.grid(row=3, column=1, padx=10, pady=5)
+
+        self.tel_label = ctk.CTkLabel(self, text="Telephone")
+        self.tel_label.grid(row=4, column=0, padx=10, pady=5)
+
+        self.tel_entry = ctk.CTkEntry(self)
+        self.tel_entry.grid(row=4, column=1, padx=10, pady=5)
+
+        self.registration_label = ctk.CTkLabel(self, text="Registration")
+        self.registration_label.grid(row=5, column=0, padx=10, pady=5)
+
+        self.registration_entry = ctk.CTkEntry(self)
+        self.registration_entry.grid(row=5, column=1, padx=10, pady=5)
+
+        self.button_frame = ctk.CTkFrame(self)
+        self.button_frame.grid(row=6, column=0, columnspan=2, padx=10, pady=5)
+
+        self.submit_button = ctk.CTkButton(self.button_frame, text="Update", command=None)
+        self.submit_button.pack(side=tk.LEFT, padx=5)
+
+        self.cancel_button = ctk.CTkButton(self.button_frame, text="Cancel", command=self.destroy)
+        self.cancel_button.pack(side=tk.LEFT, padx=5)

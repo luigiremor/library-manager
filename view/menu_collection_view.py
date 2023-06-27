@@ -77,7 +77,7 @@ class MenuCollection(ctk.CTkFrame):
             self.controller.delete_item(selected)
             self.refresh_items()
 
-    def show_details(self):
+    def show_details(self, event=None):
         # Clear the details frame
         for widget in self.details_frame.winfo_children():
             widget.destroy()

@@ -25,7 +25,7 @@ class MenuStudents(ctk.CTkFrame):
         self.buttons_frame.pack(fill=tk.X, padx=5, pady=5)
 
         self.refresh_button = ctk.CTkButton(
-            self.buttons_frame, text='Refresh', command=None)
+            self.buttons_frame, text='Refresh', command=self.refresh_students)
         self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         self.new_button = ctk.CTkButton(
@@ -46,5 +46,14 @@ class MenuStudents(ctk.CTkFrame):
         self.students_listbox = CTkListbox(
             self, width=200, height=300, command=None)
         self.students_listbox.pack(fill=tk.BOTH, expand=True)
+            
 
-   
+    def refresh_students(self):
+        students = self.controller.get_all_students()
+        self.students_listbox.clear()
+        if students:
+            for i, student in enumerate(students):
+                title = student['registration'] + ' - ' + student['name']
+                self.students_listbox.insert(i, title)
+    
+    

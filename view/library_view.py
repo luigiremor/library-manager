@@ -2,6 +2,7 @@
 import customtkinter
 from controller.library_controller import LibraryController
 from view.menu_auth_view import MenuAuth
+from view.menu_collection_view import MenuCollection
 from view.menu_main import MenuMain
 from view.menu_register import MenuRegister
 
@@ -28,6 +29,8 @@ class LibraryView(customtkinter.CTk):
                 self.views[view_name] = MenuRegister(self, self.controller)
             elif view_name == 'menu_main':
                 self.views[view_name] = MenuMain(self, self.controller)
+            elif view_name == 'menu_collection':
+                self.views[view_name] = MenuCollection(self, self.controller)
             # Add additional views here
             else:
                 raise ValueError(f'No such view: {view_name}')

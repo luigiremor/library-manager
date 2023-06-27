@@ -103,7 +103,7 @@ class NewStudentForm(ctk.CTkToplevel):
         self.button_frame = ctk.CTkFrame(self)
         self.button_frame.grid(row=6, column=0, columnspan=2, padx=10, pady=5)
 
-        self.submit_button = ctk.CTkButton(self.button_frame, text="Submit", command=None)
+        self.submit_button = ctk.CTkButton(self.button_frame, text="Add", command=None)
         self.submit_button.pack(side=tk.LEFT, padx=5)
 
         self.cancel_button = ctk.CTkButton(self.button_frame, text="Cancel", command=self.destroy)

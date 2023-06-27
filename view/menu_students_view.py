@@ -1,45 +1,50 @@
 import tkinter as tk
-import customtkinter 
+import customtkinter as ctk
 from controller.library_controller import LibraryController
+from components.ctk_listbox import CTkListbox
 
 
-class MenuStudents(customtkinter.CTkFrame):
+class MenuStudents(ctk.CTkFrame):
     def __init__(self, parent, controller: LibraryController):
-        super().__init__(parent, height=650, width=1000)
+        super().__init__(parent)
         self.parent = parent
         self.controller = controller
-        self.buttons()
-        self.entrys()
+        self.grid(sticky="nsew")    
+
+        # configure grid to fill window
+        tk.Grid.columnconfigure(self, 0, weight=1)
+        tk.Grid.rowconfigure(self, 0, weight=1)    
+
+        self.create_widgets()
     
-    
-    def buttons(self):
-        self.btn_register = customtkinter.CTkButton(self, text="Delete Student", command=None)
-        self.btn_register.grid(row=4, column=1, sticky="e", padx=10, pady=10)
-        self.btn_back = customtkinter.CTkButton(self, text="Back", command=None)
-        self.btn_back.grid(row=4, column=0, sticky="w", padx=10, pady=10)
-        self.btn_register = customtkinter.CTkButton(self, text="Edit Student", command=None)
-        self.btn_register.grid(row=4, column=2, sticky="e", padx=10, pady=10)
-        
+    def create_widgets(self):
+        self.title_label = ctk.CTkLabel(self, text='Student List')
+        self.title_label.pack(fill=tk.X, padx=5, pady=5)
 
-    def entrys(self):
-        self.entry1 = customtkinter.CTkEntry(self, width=150, corner_radius=6, placeholder_text="Register Student")
-        self.entry1.grid(row=1, column=1, sticky="e", padx=10, pady=10)
+        self.buttons_frame = ctk.CTkFrame(self)
+        self.buttons_frame.pack(fill=tk.X, padx=5, pady=5)
 
+        self.refresh_button = ctk.CTkButton(
+            self.buttons_frame, text='Refresh', command=None)
+        self.refresh_button.pack(side=tk.LEFT, padx=5)
 
-    def labels(self):
-        self.lbl_title = customtkinter.CTkLabel(self, text="Students", font=("Arial", 20))
-        self.lbl_title.grid(row=0, column=0, columnspan=2, sticky="nsew", padx=10, pady=10)
-        self.lbl_name = customtkinter.CTkLabel(self, text="Name:")
-        self.lbl_name.grid(row=1, column=0, sticky="w", padx=10, pady=10)
-        self.lbl_email = customtkinter.CTkLabel(self, text="Email:")
-        self.lbl_email.grid(row=2, column=0, sticky="w", padx=10, pady=10)
-        self.lbl_password = customtkinter.CTkLabel(self, text="Password:")
-        self.lbl_password.grid(row=3, column=0, sticky="w", padx=10, pady=10)
+        self.new_button = ctk.CTkButton(
+            self.buttons_frame, text='New Student', command=None)
+        self.new_button.pack(side=tk.LEFT, padx=5)
 
-        
+        self.update_button = ctk.CTkButton(
+            self.buttons_frame, text='Update Student', command=None)
+        self.update_button.pack(side=tk.LEFT, padx=5)
 
-        
+        self.delete_button = ctk.CTkButton(
+            self.buttons_frame, text='Delete Student', command=None)
+        self.delete_button.pack(side=tk.LEFT, padx=5)
 
-        
-        
-        
+        self.details_frame = ctk.CTkFrame(self)
+        self.details_frame.pack(side=tk.RIGHT, fill=tk.Y)
+
+        self.students_listbox = CTkListbox(
+            self, width=200, height=300, command=None)
+        self.students_listbox.pack(fill=tk.BOTH, expand=True)
+
+   

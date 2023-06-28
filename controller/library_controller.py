@@ -35,12 +35,17 @@ class LibraryController:
         else:
             messagebox.showerror(
                 "Error", "Student with this registration already exists")
+    
+    def delete_student_by_registration(self, registration):
+        self.db.delete_student_by_registration(registration)
+     
 
     def get_all_students(self):
         return self.db.get_all_students()
 
     def get_student_by_registration(self, registration):
         return self.db.get_student_by_registration(registration)
+        
 
     def create_book_item(self, title, author, release_year):
         last_inserted_id = self.db.create_book_item(

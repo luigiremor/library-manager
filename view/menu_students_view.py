@@ -45,7 +45,7 @@ class MenuStudents(ctk.CTkFrame):
         self.details_frame.pack(side=tk.RIGHT, fill=tk.Y)
 
         self.students_listbox = CTkListbox(
-            self, width=200, height=300, command=None)
+            self, width=200, height=300, command=self.show_details)
         self.students_listbox.pack(fill=tk.BOTH, expand=True)
             
 
@@ -71,8 +71,22 @@ class MenuStudents(ctk.CTkFrame):
         pass
 
 
-    def show_details(self):
-        pass
+    def show_details(self, event=None):
+        for widget in self.details_frame.winfo_children():
+            widget.destroy()
+        
+        selected = self.students_listbox.get()
+        registration = selected.split(' - ')[0]
+
+        if registration:
+            details = self.controller.get_student_by_registration(registration)
+            for key, value in details.items():
+                label = ctk.CTkLabel(self.details_frame, text=f"{key}: {value}")
+                label.pack()
+    
+    
+    
+
 
 
 class NewStudentForm(ctk.CTkToplevel):

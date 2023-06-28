@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from tkinter import messagebox
 from authenticators.authenticator import Authenticator
 from database.base_table_manager import BaseTableManager
 
@@ -349,6 +350,8 @@ class DatabaseManager(BaseTableManager):
         self.conn.commit()
 
     def lend_item(self, item_id, student_id):
+        messagebox.showinfo(
+            "Lend item", f"Item id: {item_id}, student id: {student_id}")
         self.cursor.execute("""
             UPDATE items
             SET is_lend = 1, id_student_lent = ?
@@ -450,6 +453,24 @@ class DatabaseManager(BaseTableManager):
             for row in result:
                 students.append(dict(zip(columns, row)))
             return students
+
+        return None
+
+    def get_all_lendings(self):
+        self.cursor.execute("""
+            SELECT lends.*, items.title, students.*
+            FROM lends
+            JOIN items ON lends.id_item = items.id
+            JOIN students ON lends.id_student = students.id
+        """)
+        result = self.cursor.fetchall()
+
+        if result:
+            columns = [column[0] for column in self.cursor.description]
+            lendings = []
+            for row in result:
+                lendings.append(dict(zip(columns, row)))
+            return lendings
 
         return None
 

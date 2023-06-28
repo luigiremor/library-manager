@@ -109,9 +109,12 @@ class LibraryController:
             "Success", f"Item with id {item_id} reserved by student with id {student_id}")
 
     def lend_item(self, item_id, student_id):
-        self.db.lend_item(item_id, student_id)
+        self.db.lend_item(item_id=item_id, student_id=student_id)
         messagebox.showinfo(
             "Success", f"Item with id {item_id} lent to student with id {student_id}")
+
+    def get_all_lendings(self):
+        return self.db.get_all_lendings()
 
     def cancel_item_reservation(self, item_id):
         self.db.cancel_item_reservation(item_id)

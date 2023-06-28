@@ -39,11 +39,26 @@ class LibraryController:
     def get_all_students(self):
         return self.db.get_all_students()
 
+    def get_student_by_registration(self, registration):
+        return self.db.get_student_by_registration(registration)
+
     def create_book_item(self, title, author, release_year):
         last_inserted_id = self.db.create_book_item(
             title, author, release_year)
         messagebox.showinfo(
             "Success", f"Book item created successfully with id {last_inserted_id}")
+
+    def create_article_item(self, title, release_year, abstract, word_count, author, language, keywords):
+        last_inserted_id = self.db.create_article_item(
+            title, release_year, abstract, word_count, author, language, keywords)
+        messagebox.showinfo(
+            "Success", f"Article item created successfully with id {last_inserted_id}")
+
+    def create_magazine_item(self, title, release_year, publisher, pages_count, language, genre):
+        last_inserted_id = self.db.create_magazine_item(
+            title, release_year, publisher, pages_count, language, genre)
+        messagebox.showinfo(
+            "Success", f"Magazine item created successfully with id {last_inserted_id}")
 
     def get_all_items(self):
         return self.db.get_all_items()

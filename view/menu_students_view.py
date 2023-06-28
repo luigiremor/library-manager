@@ -26,6 +26,10 @@ class MenuStudents(ctk.CTkFrame):
         self.buttons_frame = ctk.CTkFrame(self)
         self.buttons_frame.pack(fill=tk.X, padx=5, pady=5)
 
+        self.go_back_button = ctk.CTkButton(
+            self.buttons_frame, text='Go Back', command=lambda: self.parent.show_view('menu_main'))
+        self.go_back_button.pack(side=tk.LEFT, padx=5)
+
         self.refresh_button = ctk.CTkButton(
             self.buttons_frame, text='Refresh', command=self.refresh_students)
         self.refresh_button.pack(side=tk.LEFT, padx=5)

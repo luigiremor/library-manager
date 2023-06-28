@@ -6,8 +6,34 @@ from controller.library_controller import LibraryController
 
 
 class MenuCollection(ctk.CTkFrame):
+
+    key_to_string = {
+        'id': 'ID',
+        'id_item': 'ID Item',
+        'title': 'Title',
+        'release_year': 'Release Year',
+        'is_lend': 'Available',
+        'is_reserved': 'Reserved',
+        'id_student_lent': 'Student Lent ID',
+        'id_student_reserved': 'Student Reserved ID',
+        'author': 'Author',
+        'abstract': 'Abstract',
+        'word_count': 'Word Count',
+        'language': 'Language',
+        'keywords': 'Keywords',
+        'publisher': 'Publisher',
+        'pages_count': 'Pages Count',
+        'genre': 'Genre',
+    }
+
+    value_to_string = {
+        0: 'Yes',
+        1: 'No'
+    }
+
     def __init__(self, parent, controller: LibraryController):
         super().__init__(parent)
+        self.parent = parent
         self.controller = controller
         self.grid(sticky="nsew")
 
@@ -25,6 +51,10 @@ class MenuCollection(ctk.CTkFrame):
         self.buttons_frame = ctk.CTkFrame(self)
         self.buttons_frame.pack(fill=tk.X, padx=5, pady=5)
 
+        self.go_back_button = ctk.CTkButton(
+            self.buttons_frame, text='Go Back', command=lambda: self.parent.show_view('menu_main'))
+        self.go_back_button.pack(side=tk.LEFT, padx=5)
+
         self.list_type_label = ctk.CTkLabel(
             self.buttons_frame, text='List Type')
         self.list_type_label.pack(side=tk.LEFT, padx=5)
@@ -35,9 +65,9 @@ class MenuCollection(ctk.CTkFrame):
         self.list_type_combobox.pack(side=tk.LEFT, padx=5)
         self.list_type_combobox.set('Book')
 
-        self.new_button = ctk.CTkButton(
+        self.add_button = ctk.CTkButton(
             self.buttons_frame, text='New Item', command=self.add_item)
-        self.new_button.pack(side=tk.LEFT, padx=5)
+        self.add_button.pack(side=tk.LEFT, padx=5)
 
         self.update_button = ctk.CTkButton(
             self.buttons_frame, text='Update Item', command=self.update_item)
@@ -59,7 +89,7 @@ class MenuCollection(ctk.CTkFrame):
         self.items_listbox.clear()
         for index, item in enumerate(items):
             title = str(item['id_item']) + ' - ' + item['title']
-            self.items_listbox.insert(index, title)
+            self.items_listbox.insert(index, title, justify='left')
 
     def add_item(self):
         AddItemForm(self)
@@ -89,7 +119,7 @@ class MenuCollection(ctk.CTkFrame):
                 item_id, item_type)
             for key, value in details.items():
                 label = ctk.CTkLabel(self.details_frame,
-                                     text=f"{key}: {value}")
+                                     text=f"{self.key_to_string[key] if key in self.key_to_string else key}: {self.value_to_string[value] if value in self.value_to_string else value}")
                 label.pack()
 
 

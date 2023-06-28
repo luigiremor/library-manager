@@ -359,14 +359,13 @@ class TestDatabaseManager(unittest.TestCase):
         student_db = self.db.get_student_by_registration(
             self.student.registration)
         self.db.update_student(student_id=student_db['id'], name='Novo nome', email='Novo email', cpf='12345678999',
-                               tel='Novo telefone', registration='12345678999', fine_delay=0)
+                               tel='Novo telefone', registration='12345678999')
 
         student_db = self.db.get_student_by_registration('12345678999')
         self.assertEqual('Novo nome', student_db['name'])
         self.assertEqual('Novo email', student_db['email'])
         self.assertEqual('Novo telefone', student_db['tel'])
         self.assertEqual('12345678999', student_db['registration'])
-        self.assertEqual(0, student_db['fine_delay'])
 
     def test_delete_student_item(self):
         self.db.create_student(name=self.student.name, email=self.student.email, cpf=self.student.cpf, tel=self.student.tel,

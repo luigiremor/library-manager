@@ -89,6 +89,15 @@ class LibraryController:
         messagebox.showinfo(
             "Success", f"Magazine item with id {item_id} updated successfully")
 
+    def update_student(self, student_id, registration, name, email, cpf, tel):
+        self.db.update_student(student_id=student_id,
+                               registration=registration,
+                               name=name,
+                               email=email,
+                               cpf=cpf,
+                               tel=tel
+                               )
+
     def delete_item(self, item_id, item_type):
         self.db.delete_item(item_id=item_id, item_type=item_type)
         messagebox.showinfo(

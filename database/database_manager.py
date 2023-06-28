@@ -453,12 +453,12 @@ class DatabaseManager(BaseTableManager):
 
         return None
 
-    def update_student(self, student_id, name, email, cpf, tel, registration, fine_delay):
+    def update_student(self, student_id, name, email, cpf, tel, registration):
         self.cursor.execute("""
             UPDATE students
-            SET name = ?, email = ?, cpf = ?, tel = ?, registration = ?, fine_delay = ?
+            SET name = ?, email = ?, cpf = ?, tel = ?, registration = ?
             WHERE id = ?
-        """, (name, email, cpf, tel, registration, fine_delay, student_id))
+        """, (name, email, cpf, tel, registration, student_id))
 
         self.conn.commit()
 

@@ -17,6 +17,7 @@ class MenuStudents(ctk.CTkFrame):
         tk.Grid.rowconfigure(self, 0, weight=1)
 
         self.create_widgets()
+        self.refresh_students()
 
     def create_widgets(self):
         self.title_label = ctk.CTkLabel(self, text='Student List')

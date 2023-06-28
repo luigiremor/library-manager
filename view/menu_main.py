@@ -23,9 +23,9 @@ class MenuMain(ctk.CTkFrame):
             self, text="Collection", command=self.go_collection)
         self.btn_collection.grid(row=0, column=2, padx=10, pady=10)
 
-        self.btn_search = ctk.CTkButton(
-            self, text="Search", command=None)
-        self.btn_search.grid(row=0, column=3, padx=10, pady=10)
+        self.btn_students = ctk.CTkButton(
+            self, text="Students", command=self.go_student)
+        self.btn_students.grid(row=0, column=3, padx=10, pady=10)
 
         self.btn_add = ctk.CTkButton(
             self, text="Add", command=None)
@@ -43,3 +43,6 @@ class MenuMain(ctk.CTkFrame):
 
     def go_collection(self):
         self.parent.show_view("menu_collection")
+
+    def go_student(self):
+        self.parent.show_view("menu_students")

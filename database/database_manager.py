@@ -321,10 +321,15 @@ class DatabaseManager(BaseTableManager):
 
         self.conn.commit()
 
-    def delete_item(self, item_id):
+    def delete_item(self, item_id, item_type):
         self.cursor.execute("""
             DELETE FROM items
             WHERE id = ?
+        """, (item_id,))
+
+        self.cursor.execute(f"""
+            DELETE FROM {item_type}_items
+            WHERE id_item = ?
         """, (item_id,))
 
         self.conn.commit()

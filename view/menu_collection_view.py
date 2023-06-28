@@ -112,25 +112,14 @@ class NewItemForm(ctk.CTkToplevel):
         self.select_label = ctk.CTkLabel(self, text="Select Item Type")
         self.select_label.pack(fill=tk.X, padx=5, pady=5)
 
-        self.item_type = tk.StringVar()
-        self.item_type.set("Book")
-        self.item_type_combobox = ctk.CTkComboBox(
-            self, width=200, height=30, variable=self.item_type, state="readonly", values=["Book", "Magazine", "Article"])
-        self.item_type_combobox.pack(fill=tk.X, padx=5, pady=5)
-        self.item_type_combobox.bind(
-            '<<ComboboxSelected>>', self.on_item_type_change)
-
-        # initially create form for 'Book'
-        self.create_form_for_item_type('Book')
-
-    def on_item_type_change(self, event=None):
-        self.create_form_for_item_type(self.item_type.get())
+        self.create_form_for_item_type(parent.list_type_combobox.get())
 
     def create_form_for_item_type(self, item_type):
         # Remove all current widgets
         for widget in self.winfo_children():
-            if widget != self.select_label and widget != self.item_type_combobox and widget != self.create_button:
+            if widget != self.select_label and widget != self.item_type_combobox:
                 widget.destroy()
+
         # Depending on the item_type, create a different form
         if item_type == 'Book':
             self.book_form()

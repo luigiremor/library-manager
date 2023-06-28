@@ -6,6 +6,8 @@ from view.menu_collection_view import MenuCollection
 from view.menu_main import MenuMain
 from view.menu_register import MenuRegister
 from view.menu_students_view import MenuStudents
+from view.menu_lend_view import MenuLend
+from view.menu_reservation_view import MenuReservation
 
 
 class LibraryView(customtkinter.CTk):
@@ -35,7 +37,10 @@ class LibraryView(customtkinter.CTk):
                 self.views[view_name] = MenuStudents(self, self.controller)
             elif view_name == 'menu_collection':
                 self.views[view_name] = MenuCollection(self, self.controller)
-            # Add additional views here
+            elif view_name == 'menu_lend':
+                self.views[view_name] = MenuLend(self, self.controller)
+            elif view_name == 'menu_reservation':
+                self.views[view_name] = MenuReservation(self, self.controller)
             else:
                 raise ValueError(f'No such view: {view_name}')
 

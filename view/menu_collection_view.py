@@ -30,14 +30,10 @@ class MenuCollection(ctk.CTkFrame):
         self.list_type_label.pack(side=tk.LEFT, padx=5)
 
         self.list_type_combobox = ctk.CTkComboBox(
-            self.buttons_frame, values=['Book', 'Magazine', 'Article'])
+            self.buttons_frame, values=['Book', 'Magazine', 'Article'], command=lambda event: self.refresh_items(self.list_type_combobox.get().lower()))
 
         self.list_type_combobox.pack(side=tk.LEFT, padx=5)
         self.list_type_combobox.set('Book')
-
-        self.refresh_button = ctk.CTkButton(
-            self.buttons_frame, text='Refresh', command=lambda: self.refresh_items(self.list_type_combobox.get().lower()))
-        self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         self.new_button = ctk.CTkButton(
             self.buttons_frame, text='New Item', command=self.add_item)

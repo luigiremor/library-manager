@@ -16,6 +16,7 @@ class MenuCollection(ctk.CTkFrame):
         tk.Grid.rowconfigure(self, 0, weight=1)
 
         self.create_widgets()
+        self.refresh_items('book')
 
     def create_widgets(self):
         self.title_label = ctk.CTkLabel(self, text='Library Collection')
@@ -72,9 +73,11 @@ class MenuCollection(ctk.CTkFrame):
 
     def delete_item(self):
         selected = self.items_listbox.get()
+        item_type = self.list_type_combobox.get().lower()
         if selected:
-            self.controller.delete_item(selected)
-            self.refresh_items()
+            item_id = selected.split(' - ')[0]
+            self.controller.delete_item(item_id=item_id, item_type=item_type)
+            self.refresh_items(item_type)
 
     def show_details(self, event=None):
         # Clear the details frame
@@ -95,15 +98,17 @@ class MenuCollection(ctk.CTkFrame):
 
 
 class AddItemForm(ctk.CTkToplevel):
-    def __init__(self, parent):
+    def __init__(self, parent: MenuCollection):
         super().__init__(parent)
         self.title("New Item")
+        self.parent = parent
+        self.item_type = parent.list_type_combobox.get()
         self.controller: LibraryController = parent.controller
 
         self.select_label = ctk.CTkLabel(self, text="Select Item Type")
         self.select_label.pack(fill=tk.X, padx=5, pady=5)
 
-        self.create_form_for_item_type(parent.list_type_combobox.get())
+        self.create_form_for_item_type(self.item_type)
 
     def create_form_for_item_type(self, item_type):
         # Remove all current widgets
@@ -235,6 +240,9 @@ class AddItemForm(ctk.CTkToplevel):
         release_year = self.release_year_entry.get()
         author = self.author_entry.get()
         self.controller.create_book_item(title, release_year, author)
+
+        self.parent.refresh_items(self.item_type)
+
         self.destroy()
 
     def create_magazine_item(self):
@@ -246,6 +254,9 @@ class AddItemForm(ctk.CTkToplevel):
         genre = self.genre_entry.get()
         self.controller.create_magazine_item(
             title, release_year, publisher, pages_count, language, genre)
+
+        self.parent.refresh_items(self.item_type)
+
         self.destroy()
 
     def create_article_item(self):
@@ -258,13 +269,20 @@ class AddItemForm(ctk.CTkToplevel):
         keywords = self.keywords_entry.get()
         self.controller.create_article_item(
             title, release_year, abstract, word_count, author, language, keywords)
+
+        self.parent.refresh_items(self.item_type)
+
         self.destroy()
 
 
 class UpdateItemForm(ctk.CTkToplevel):
     def __init__(self, parent: MenuCollection):
         super().__init__(parent)
+        self.item_type = parent.list_type_combobox.get()
+        self.parent = parent
+
         self.title("New Item")
+
         self.controller: LibraryController = parent.controller
 
         self.select_label = ctk.CTkLabel(self, text="Select Item Type")
@@ -273,9 +291,9 @@ class UpdateItemForm(ctk.CTkToplevel):
         self.selected_item_id = parent.items_listbox.get().split(' - ')[0]
 
         self.item_data = self.controller.get_complete_item_details(
-            self.selected_item_id, parent.list_type_combobox.get().lower())
+            self.selected_item_id, self.item_type.lower())
 
-        self.create_form_for_item_type(parent.list_type_combobox.get())
+        self.create_form_for_item_type(self.item_type)
 
     def create_form_for_item_type(self, item_type):
         # Remove all current widgets
@@ -314,7 +332,7 @@ class UpdateItemForm(ctk.CTkToplevel):
         self.author_entry.insert(0, self.item_data['author'])
 
         self.create_button = ctk.CTkButton(
-            self, text="Create", command=self.update_book_item)
+            self, text="Update Book", command=self.update_book_item)
         self.create_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def magazine_form(self):
@@ -361,7 +379,7 @@ class UpdateItemForm(ctk.CTkToplevel):
         self.genre_entry.insert(0, self.item_data['genre'])
 
         self.create_button = ctk.CTkButton(
-            self, text="Create", command=self.update_magazine_item)
+            self, text="Update Magazine", command=self.update_magazine_item)
         self.create_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def article_form(self):
@@ -415,7 +433,7 @@ class UpdateItemForm(ctk.CTkToplevel):
         self.keywords_entry.insert(0, self.item_data['keywords'])
 
         self.create_button = ctk.CTkButton(
-            self, text="Create", command=self.update_article_item)
+            self, text="Update Article", command=self.update_article_item)
         self.create_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     def update_book_item(self):
@@ -424,6 +442,8 @@ class UpdateItemForm(ctk.CTkToplevel):
         author = self.author_entry.get()
         self.controller.update_book_item(
             self.item_data['id_item'], title, release_year, author)
+        self.parent.refresh_items(type_item=self.item_type)
+
         self.destroy()
 
     def update_magazine_item(self):
@@ -442,6 +462,7 @@ class UpdateItemForm(ctk.CTkToplevel):
             language=language,
             genre=genre
         )
+        self.parent.refresh_items(type_item=self.item_type)
 
         self.destroy()
 
@@ -463,4 +484,6 @@ class UpdateItemForm(ctk.CTkToplevel):
             language=language,
             keywords=keywords
         )
+        self.parent.refresh_items(type_item=self.item_type)
+
         self.destroy()

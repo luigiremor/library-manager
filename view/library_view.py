@@ -20,7 +20,6 @@ class LibraryView(customtkinter.CTk):
 
         self.views = {}
 
-        
         self.show_view('menu_auth')
 
     def get_view(self, view_name):

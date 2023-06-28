@@ -35,17 +35,15 @@ class LibraryController:
         else:
             messagebox.showerror(
                 "Error", "Student with this registration already exists")
-    
+
     def delete_student_by_registration(self, registration):
         self.db.delete_student_by_registration(registration)
-     
 
     def get_all_students(self):
         return self.db.get_all_students()
 
     def get_student_by_registration(self, registration):
         return self.db.get_student_by_registration(registration)
-        
 
     def create_book_item(self, title, release_year, author):
         last_inserted_id = self.db.create_book_item(
@@ -91,8 +89,8 @@ class LibraryController:
         messagebox.showinfo(
             "Success", f"Magazine item with id {item_id} updated successfully")
 
-    def delete_item(self, item_id):
-        self.db.delete_item(item_id)
+    def delete_item(self, item_id, item_type):
+        self.db.delete_item(item_id=item_id, item_type=item_type)
         messagebox.showinfo(
             "Success", f"Item with id {item_id} deleted successfully")
 

@@ -305,7 +305,7 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.create_book_item(
             self.book.title, self.book.author, self.book.release_year)
         book_db = self.db.get_book_item_by_id(1)
-        self.db.delete_item(book_db['id'])
+        self.db.delete_item(book_db['id'], 'book')
         book_db = self.db.get_book_item_by_id(1)
         self.assertIsNone(book_db)
 

@@ -42,9 +42,9 @@ class LibraryController:
     def get_student_by_registration(self, registration):
         return self.db.get_student_by_registration(registration)
 
-    def create_book_item(self, title, author, release_year):
+    def create_book_item(self, title, release_year, author):
         last_inserted_id = self.db.create_book_item(
-            title, author, release_year)
+            title, release_year, author)
         messagebox.showinfo(
             "Success", f"Book item created successfully with id {last_inserted_id}")
 
@@ -73,6 +73,18 @@ class LibraryController:
         self.db.update_book_item(item_id, title, author, release_year)
         messagebox.showinfo(
             "Success", f"Book item with id {item_id} updated successfully")
+
+    def update_article_item(self, item_id, title, author, release_year, abstract, word_count, language, keywords):
+        self.db.update_article_item(
+            item_id=item_id, title=title, author=author, release_year=release_year, abstract=abstract, word_count=word_count, language=language, keywords=keywords)
+        messagebox.showinfo(
+            "Success", f"Article item with id {item_id} updated successfully")
+
+    def update_magazine_item(self, item_id, title, publisher, release_year, pages_count, language, genre):
+        self.db.update_magazine_item(
+            item_id=item_id, title=title, publisher=publisher, release_year=release_year, pages_count=pages_count, language=language, genre=genre)
+        messagebox.showinfo(
+            "Success", f"Magazine item with id {item_id} updated successfully")
 
     def delete_item(self, item_id):
         self.db.delete_item(item_id)

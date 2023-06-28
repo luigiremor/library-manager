@@ -306,7 +306,7 @@ class DatabaseManager(BaseTableManager):
 
         self.conn.commit()
 
-    def update_article_item(self, item_id, release_year, title, abstract, word_count, author, language, keywords):
+    def update_article_item(self, item_id, title, release_year, abstract, word_count, author, language, keywords):
         self.cursor.execute("""
             UPDATE items
             SET title = ?, release_year = ?

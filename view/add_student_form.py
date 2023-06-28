@@ -13,6 +13,11 @@ class AddStudentForm(ctk.CTkToplevel):
         self.parent = parent
         self.title('New Student')
         self.controller: LibraryController = parent.controller
+        self.create_widgets()
+
+
+
+    def create_widgets(self):
         self.select_label = ctk.CTkLabel(self, text="Student Data")
         self.select_label.grid(row=0, column=0, columnspan=2, padx=5, pady=5)
 
@@ -56,6 +61,7 @@ class AddStudentForm(ctk.CTkToplevel):
         self.cancel_button = ctk.CTkButton(
             self.button_frame, text="Cancel", command=self.destroy)
         self.cancel_button.pack(side=tk.LEFT, padx=5)
+
 
     def create_student(self):
         name = self.name_entry.get()

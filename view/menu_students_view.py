@@ -10,7 +10,7 @@ class MenuStudents(ctk.CTkFrame):
         super().__init__(parent)
         self.parent = parent
         self.controller = controller
-        self.grid(sticky="nsew")    
+        self.grid(sticky="nsew")  
 
         # configure grid to fill window
         tk.Grid.columnconfigure(self, 0, weight=1)
@@ -34,11 +34,11 @@ class MenuStudents(ctk.CTkFrame):
         self.new_button.pack(side=tk.LEFT, padx=5)
 
         self.update_button = ctk.CTkButton(
-            self.buttons_frame, text='Update Student', command=self.update_student)
+            self.buttons_frame, text='Update Student', command=None)
         self.update_button.pack(side=tk.LEFT, padx=5)
 
         self.delete_button = ctk.CTkButton(
-            self.buttons_frame, text='Delete Student', command=None)
+            self.buttons_frame, text='Delete Student', command=self.delete_student)
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
         self.details_frame = ctk.CTkFrame(self)
@@ -68,7 +68,11 @@ class MenuStudents(ctk.CTkFrame):
     
 
     def delete_student(self):
-        pass
+        selected = self.students_listbox.get()
+        if selected:
+            registration = selected.split(' - ')[0]
+            self.controller.delete_student_by_registration(registration)
+            self.refresh_students()
 
 
     def show_details(self, event=None):
@@ -84,9 +88,6 @@ class MenuStudents(ctk.CTkFrame):
                 label = ctk.CTkLabel(self.details_frame, text=f"{key}: {value}")
                 label.pack()
     
-    
-    
-
 
 
 class NewStudentForm(ctk.CTkToplevel):
@@ -192,7 +193,7 @@ class UpdateStudentForm(ctk.CTkToplevel):
         self.registration_entry.grid(row=5, column=1, padx=10, pady=5)
 
         self.button_frame = ctk.CTkFrame(self)
-        self.button_frame.grid(row=6, column=0, columnspan=2, padx=10, pady=5)
+        self.button_frame.grid(row=6, column=0, columnspan=2, padx=10, pady=5) 
 
         self.submit_button = ctk.CTkButton(self.button_frame, text="Update", command=None)
         self.submit_button.pack(side=tk.LEFT, padx=5)

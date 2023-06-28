@@ -11,12 +11,13 @@ class MenuMain(ctk.CTkFrame):
         self.navbar()
 
     def navbar(self):
+
         self.btn_lend = ctk.CTkButton(
             self, text="Home", command=self.go_home)
         self.btn_lend.grid(row=0, column=0, padx=10, pady=10)
 
         self.btn_lend = ctk.CTkButton(
-            self, text="Lend", command=None)
+            self, text="Lend", command=self.go_lend)
         self.btn_lend.grid(row=0, column=1, padx=10, pady=10)
 
         self.btn_collection = ctk.CTkButton(
@@ -46,3 +47,6 @@ class MenuMain(ctk.CTkFrame):
 
     def go_student(self):
         self.parent.show_view("menu_students")
+
+    def go_lend(self):
+        self.parent.show_view("menu_lend")

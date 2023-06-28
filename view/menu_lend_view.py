@@ -3,19 +3,19 @@ import customtkinter
 from components.ctk_listbox import CTkListbox
 from controller.library_controller import LibraryController
 
+
 class MenuLend(customtkinter.CTkFrame):
     def __init__(self, parent, controller: LibraryController):
         super().__init__(parent)
         self.parent = parent
         self.controller = controller
         self.grid(sticky="nsew")
-        
+
         # configure grid to fill window
         tk.Grid.columnconfigure(self, 0, weight=1)
         tk.Grid.rowconfigure(self, 0, weight=1)
 
         self.create_widgets()
-    
 
     def create_widgets(self):
         self.title_label = customtkinter.CTkLabel(self, text='Lend List')
@@ -25,7 +25,7 @@ class MenuLend(customtkinter.CTkFrame):
         self.buttons_frame.pack(fill=tk.X, padx=5, pady=5)
 
         self.refresh_button = customtkinter.CTkButton(
-            self.buttons_frame, text='Refresh', command=None)
+            self.buttons_frame, text='Go back', command=lambda: self.parent.show_view('menu_main'))
         self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         self.new_button = customtkinter.CTkButton(
@@ -46,4 +46,3 @@ class MenuLend(customtkinter.CTkFrame):
         self.lends_listbox = CTkListbox(
             self, width=200, height=300, command=None)
         self.lends_listbox.pack(fill=tk.BOTH, expand=True)
-

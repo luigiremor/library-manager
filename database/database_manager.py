@@ -175,7 +175,7 @@ class DatabaseManager(BaseTableManager):
     def get_all_students(self):
         return self.select_all('students')
 
-    def create_book_item(self, title, author, release_year):
+    def create_book_item(self, title, release_year, author):
         self.insert('items', ['title', 'release_year'], [title, release_year])
         last_inserted_id = self.cursor.lastrowid
         self.insert('book_items', ['author', 'id_item'], [
@@ -183,7 +183,7 @@ class DatabaseManager(BaseTableManager):
 
         return last_inserted_id
 
-    def create_article_item(self, release_year, title, abstract, word_count, author, language, keywords):
+    def create_article_item(self, title, release_year, abstract, word_count, author, language, keywords):
         self.insert('items', ['title', 'release_year'], [title, release_year])
         last_inserted_id = self.cursor.lastrowid
         self.insert('article_items', ['abstract', 'word_count', 'author', 'language', 'keywords', 'id_item'], [
@@ -191,7 +191,7 @@ class DatabaseManager(BaseTableManager):
 
         return last_inserted_id
 
-    def create_magazine_item(self, release_year, title, publisher, pages_count, language, genre):
+    def create_magazine_item(self, title, release_year, publisher, pages_count, language, genre):
         self.insert('items', ['title', 'release_year'], [title, release_year])
         last_inserted_id = self.cursor.lastrowid
         self.insert('magazine_items', ['publisher', 'pages_count', 'language', 'genre', 'id_item'], [

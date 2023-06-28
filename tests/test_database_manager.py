@@ -75,7 +75,7 @@ class TestDatabaseManager(unittest.TestCase):
 
     def test_create_and_retrieve_book(self):
         self.db.create_book_item(
-            self.book.title, self.book.author, self.book.release_year)
+            self.book.title, self.book.release_year, self.book.author)
         book_db = self.db.get_book_item_by_id(1)
         self.assertEqual(self.book.title, book_db['title'])
         self.assertEqual(self.book.author, book_db['author'])
@@ -201,8 +201,8 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertFalse(article_db['is_lend'])
 
     def test_create_and_get_magazine(self):
-        self.db.create_magazine_item(release_year=self.magazine.release_year,
-                                     title=self.magazine.title,
+        self.db.create_magazine_item(title=self.magazine.title,
+                                     release_year=self.magazine.release_year,
                                      publisher=self.magazine.publisher,
                                      pages_count=self.magazine.pages_count,
                                      genre=self.magazine.genre,
@@ -272,7 +272,7 @@ class TestDatabaseManager(unittest.TestCase):
             language=self.article.language,
             keywords=self.article.keywords)
         article_db = self.db.get_article_item_by_id(1)
-        self.db.update_article_item(article_db['id'], release_year=2018, title='Novo titulo', abstract='Novo abstract',
+        self.db.update_article_item(article_db['id'], title='Novo titulo', release_year=2018, abstract='Novo abstract',
                                     word_count=100, author='Novo autor', language='Novo idioma', keywords='Novas palavras')
         article_db = self.db.get_article_item_by_id(1)
         self.assertEqual(2018, article_db['release_year'])
@@ -291,7 +291,7 @@ class TestDatabaseManager(unittest.TestCase):
                                      genre=self.magazine.genre,
                                      language=self.magazine.language)
         magazine_db = self.db.get_magazine_item_by_id(1)
-        self.db.update_magazine_item(magazine_db['id'], release_year=2018, title='Novo titulo',
+        self.db.update_magazine_item(magazine_db['id'], title='Novo titulo', release_year=2018,
                                      publisher='Nova editora', pages_count=100, genre='Novo genero', language='Novo idioma')
         magazine_db = self.db.get_magazine_item_by_id(1)
         self.assertEqual(2018, magazine_db['release_year'])
@@ -320,8 +320,8 @@ class TestDatabaseManager(unittest.TestCase):
             author=self.article.author,
             language=self.article.language,
             keywords=self.article.keywords)
-        self.db.create_magazine_item(release_year=self.magazine.release_year,
-                                     title=self.magazine.title,
+        self.db.create_magazine_item(title=self.magazine.title,
+                                     release_year=self.magazine.release_year,
                                      publisher=self.magazine.publisher,
                                      pages_count=self.magazine.pages_count,
                                      genre=self.magazine.genre,
@@ -340,8 +340,8 @@ class TestDatabaseManager(unittest.TestCase):
             author=self.article.author,
             language=self.article.language,
             keywords=self.article.keywords)
-        self.db.create_magazine_item(release_year=self.magazine.release_year,
-                                     title=self.magazine.title,
+        self.db.create_magazine_item(title=self.magazine.title,
+                                     release_year=self.magazine.release_year,
                                      publisher=self.magazine.publisher,
                                      pages_count=self.magazine.pages_count,
                                      genre=self.magazine.genre,

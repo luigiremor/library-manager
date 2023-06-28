@@ -350,8 +350,6 @@ class DatabaseManager(BaseTableManager):
         self.conn.commit()
 
     def lend_item(self, item_id, student_id):
-        messagebox.showinfo(
-            "Lend item", f"Item id: {item_id}, student id: {student_id}")
         self.cursor.execute("""
             UPDATE items
             SET is_lend = 1, id_student_lent = ?

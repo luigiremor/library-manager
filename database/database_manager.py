@@ -448,6 +448,23 @@ class DatabaseManager(BaseTableManager):
 
         return None
 
+    def update_student(self, student_id, name, email, cpf, tel, registration, fine_delay):
+        self.cursor.execute("""
+            UPDATE students
+            SET name = ?, email = ?, cpf = ?, tel = ?, registration = ?, fine_delay = ?
+            WHERE id = ?
+        """, (name, email, cpf, tel, registration, fine_delay, student_id))
+
+        self.conn.commit()
+
+    def delete_student_by_registration(self, registration):
+        self.cursor.execute("""
+            DELETE FROM students
+            WHERE registration = ?
+        """, (registration,))
+
+        self.conn.commit()
+
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
 

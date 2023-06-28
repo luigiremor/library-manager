@@ -88,7 +88,8 @@ class MenuCollection(ctk.CTkFrame):
         items = self.controller.get_all_items_by_type(type_item)
         self.items_listbox.clear()
         for index, item in enumerate(items):
-            title = str(item['id_item']) + ' - ' + item['title']
+            title = str(item['id_item']) + ' - ' + item['title'] + \
+                ' | Available: ' + self.value_to_string[item['is_lend']]
             self.items_listbox.insert(index, title, justify='left')
 
     def add_item(self):

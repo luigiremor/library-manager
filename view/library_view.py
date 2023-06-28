@@ -47,10 +47,10 @@ class LibraryView(customtkinter.CTk):
 
     def show_view(self, view_name):
         if hasattr(self, 'current_view'):
-            self.current_view.pack_forget()
+            self.current_view.grid_forget()
 
         self.current_view = self.get_view(view_name)
-        self.current_view.pack()
+        self.current_view.grid(sticky="nsew")
 
     def destroy(self):
         self.controller.close_connection()

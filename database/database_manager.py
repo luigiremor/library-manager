@@ -456,7 +456,7 @@ class DatabaseManager(BaseTableManager):
 
     def get_all_lendings(self):
         self.cursor.execute("""
-            SELECT lends.*, items.title, students.*
+            SELECT lends.*, items.title, students.registration, students.name
             FROM lends
             JOIN items ON lends.id_item = items.id
             JOIN students ON lends.id_student = students.id

@@ -46,11 +46,33 @@ class LibraryView(customtkinter.CTk):
         return self.views[view_name]
 
     def show_view(self, view_name):
+
         if hasattr(self, 'current_view'):
             self.current_view.grid_forget()
 
         self.current_view = self.get_view(view_name)
-        self.current_view.grid(sticky="nsew")
+        if view_name == 'menu_auth' or view_name == 'menu_register':
+            self.grid_columnconfigure(0, weight=1)
+            self.grid_rowconfigure(0, weight=1)
+
+            # Coloca o widget no centro da célula da grade
+            self.current_view.grid(sticky="nsew")
+
+            # Centraliza a célula da grade na janela
+            self.update_idletasks()
+            window_width = self.winfo_width()
+            window_height = self.winfo_height()
+            self.current_view_width = self.current_view.winfo_reqwidth()
+            self.current_view_height = self.current_view.winfo_reqheight()
+            x_offset = abs((window_width - self.current_view_width)) // 2
+            y_offset = abs((window_height - self.current_view_height)) // 2
+            self.current_view.grid_configure(padx=x_offset, pady=y_offset)
+            
+        else:
+            self.grid_columnconfigure(0, weight=1)
+            self.grid_rowconfigure(0, weight=1)
+            self.current_view.grid(sticky="nsew")
+
 
     def destroy(self):
         self.controller.close_connection()

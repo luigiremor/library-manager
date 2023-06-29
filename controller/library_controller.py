@@ -116,5 +116,10 @@ class LibraryController:
         messagebox.showinfo(
             "Success", f"Item with id {item_id} returned successfully")
 
+    def pay_student_debt(self, student_id, amount):
+        self.db.pay_student_debt(student_id, amount)
+        messagebox.showinfo(
+            "Success", f"Student with id {student_id} paid successfully")
+
     def close_connection(self):
         self.db.close_connection()

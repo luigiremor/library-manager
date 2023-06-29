@@ -449,6 +449,26 @@ class DatabaseManager(BaseTableManager):
 
         self.conn.commit()
 
+    def pay_student_debt(self, student_id, amount):
+        self.cursor.execute("""
+            SELECT fine_delay
+            FROM students
+            WHERE id = ?
+        """, (student_id,))
+        result = self.cursor.fetchone()
+        if result:
+            fine_delay = result[0]
+            if amount > fine_delay:
+                raise ValueError("Amount is greater than the fine delay")
+            self.cursor.execute("""
+                UPDATE students
+                SET fine_delay = fine_delay - ?
+                WHERE id = ?
+            """, (amount, student_id))
+            self.conn.commit()
+        else:
+            raise ValueError("Student not found")
+
     # Implement similar methods for all operations (insert, update, delete, select) on each table
     # For example, insert_item, delete_item, select_item, update_item etc.
 

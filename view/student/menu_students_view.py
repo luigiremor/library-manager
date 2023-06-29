@@ -46,6 +46,10 @@ class MenuStudents(ctk.CTkFrame):
             self.buttons_frame, text='Delete Student', command=self.delete_student)
         self.delete_button.pack(side=tk.LEFT, padx=5)
 
+        self.payment_button = ctk.CTkButton(
+            self.buttons_frame, text='Payment', command=self.payment)
+        self.payment_button.pack(side=tk.LEFT, padx=5)
+
         self.details_frame = ctk.CTkFrame(self)
         self.details_frame.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -64,6 +68,16 @@ class MenuStudents(ctk.CTkFrame):
     def add_student(self):
         from view.student.add_student_form import AddStudentForm
         AddStudentForm(self)
+
+    def payment(self):
+        registration_selected = self.students_listbox.get().split(' - ')[0]
+
+        student = self.controller.get_student_by_registration(
+            registration_selected)
+
+        if student:
+            from view.student.payment_student_form import PaymentStudentForm
+            PaymentStudentForm(self, student=student)
 
     def update_student(self):
         registration_selected = self.students_listbox.get().split(' - ')[0]

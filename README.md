@@ -2,7 +2,7 @@
 
 ## 1. Introdução
 
-O objetivo deste documento é estabelecer a descrição completa dos requisitos do sistema Library Manager. O Library Manager é um sistema de gerenciamento de bibliotecas desenvolvido para auxiliar bibliotecários e usuários na gestão e acesso a recursos da biblioteca.
+O objetivo deste documento é estabelecer a descrição completa dos requisitos do sistema Library Manager. O Library Manager é um sistema de gerenciamento de bibliotecas desenvolvido para auxiliar bibliotecários na gestão e acesso a recursos da biblioteca.
 
 ## 2. Descrição Geral
 

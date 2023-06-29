@@ -1,6 +1,8 @@
 import customtkinter as ctk
-
+import tkinter as tk
+from PIL import Image, ImageTk
 from controller.library_controller import LibraryController
+
 
 
 class MenuMain(ctk.CTkFrame):
@@ -9,9 +11,10 @@ class MenuMain(ctk.CTkFrame):
         self.parent = parent
         self.controller = controller
         self.navbar()
+        self.widgets()
+        self.images()
 
     def navbar(self):
-
         self.btn_lend = ctk.CTkButton(
             self, text="Home", command=self.go_home)
         self.btn_lend.grid(row=0, column=0, padx=10, pady=10)
@@ -50,3 +53,24 @@ class MenuMain(ctk.CTkFrame):
 
     def go_lend(self):
         self.parent.show_view("menu_lend")
+
+    def widgets(self):
+        self.label = ctk.CTkLabel(self, text="Biblioteca Universitária", font=("Arial", 30))
+        self.label.place(x=330, y=500)
+
+    def images(self):
+        image = Image.open("view/images/ufsc2.png")
+
+        width = 300  
+        height = 300 
+        image = image.resize((width, height), Image.ANTIALIAS)
+
+        logo = ImageTk.PhotoImage(image)
+
+        self.label_logo = tk.Label(self, image=logo)
+        self.label_logo.place(x=450, y=245)
+
+        self.label_logo.configure(bg=self["bg"])
+
+        self.label_logo.image = logo  
+        self.label_logo["highlightthickness"] = 0

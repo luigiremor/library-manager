@@ -13,25 +13,30 @@ class MenuMain(ctk.CTkFrame):
         self.widgets()
 
     def navbar(self):
-        self.btn_lend = ctk.CTkButton(
-            self, text="Home", command=self.go_home)
-        self.btn_lend.grid(row=0, column=0, padx=10, pady=10)
+        # Create a Frame to hold all buttons
+        navbar_frame = tk.Frame(self, bg=self['bg'])
+
+        self.btn_home = ctk.CTkButton(
+            navbar_frame, text="Home", command=self.go_home)
+        self.btn_home.grid(row=0, column=0, padx=10, pady=10)
 
         self.btn_lend = ctk.CTkButton(
-            self, text="Lend", command=self.go_lend)
+            navbar_frame, text="Lend", command=self.go_lend)
         self.btn_lend.grid(row=0, column=1, padx=10, pady=10)
 
         self.btn_collection = ctk.CTkButton(
-            self, text="Collection", command=self.go_collection)
+            navbar_frame, text="Collection", command=self.go_collection)
         self.btn_collection.grid(row=0, column=2, padx=10, pady=10)
 
         self.btn_students = ctk.CTkButton(
-            self, text="Students", command=self.go_student)
+            navbar_frame, text="Students", command=self.go_student)
         self.btn_students.grid(row=0, column=3, padx=10, pady=10)
 
         self.btn_logout = ctk.CTkButton(
-            self, text="Logout", command=self.exit)
-        self.btn_logout.grid(row=0, column=6, padx=10, pady=10)
+            navbar_frame, text="Logout", command=self.exit)
+        self.btn_logout.grid(row=0, column=4, padx=10, pady=10)
+
+        navbar_frame.place(anchor="n", relx=0.5)
 
     def go_home(self):
         self.parent.show_view("menu_main")
@@ -49,8 +54,6 @@ class MenuMain(ctk.CTkFrame):
         self.parent.show_view("menu_lend")
 
     def widgets(self):
-        self.label = ctk.CTkLabel(
-            self, text="Biblioteca Universitária", font=("Arial", 30))
 
         window_width = self.parent.winfo_width()
         window_height = self.parent.winfo_height()
@@ -65,15 +68,11 @@ class MenuMain(ctk.CTkFrame):
 
         self.label_logo = tk.Label(self, image=logo)
 
-        center_x = window_width // 2
+        image_x = window_width // 2
         image_y = window_height * 0.4
-        self.label_logo.place(x=center_x, y=image_y, anchor="center")
+        self.label_logo.place(x=image_x, y=image_y, anchor="center")
 
         self.label_logo.configure(bg=self["bg"])
 
         self.label_logo.image = logo
         self.label_logo["highlightthickness"] = 0
-
-        # this 20 is to give a little space between the image and the label
-        label_y = image_y + height + 20
-        self.label.place(x=center_x, y=label_y, anchor="center")

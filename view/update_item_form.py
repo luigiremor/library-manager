@@ -12,7 +12,7 @@ class UpdateItemForm(ctk.CTkToplevel):
         self.item_type = parent.list_type_combobox.get()
         self.parent = parent
 
-        self.title("New Item")
+        self.title("Add Item")
 
         self.controller: LibraryController = parent.controller
 

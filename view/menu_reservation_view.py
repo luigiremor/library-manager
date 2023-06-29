@@ -10,16 +10,16 @@ class MenuReservation(customtkinter.CTkFrame):
         self.parent = parent
         self.controller = controller
         self.grid(sticky="nsew")
-        
+
         # configure grid to fill window
         tk.Grid.columnconfigure(self, 0, weight=1)
         tk.Grid.rowconfigure(self, 0, weight=1)
 
         self.create_widgets()
-    
 
     def create_widgets(self):
-        self.title_label = customtkinter.CTkLabel(self, text='Reservation List')
+        self.title_label = customtkinter.CTkLabel(
+            self, text='Reservation List')
         self.title_label.pack(fill=tk.X, padx=5, pady=5)
 
         self.buttons_frame = customtkinter.CTkFrame(self)
@@ -30,7 +30,7 @@ class MenuReservation(customtkinter.CTkFrame):
         self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         self.new_button = customtkinter.CTkButton(
-            self.buttons_frame, text='New Reservation', command=None)
+            self.buttons_frame, text='Add Reservation', command=None)
         self.new_button.pack(side=tk.LEFT, padx=5)
 
         self.update_button = customtkinter.CTkButton(

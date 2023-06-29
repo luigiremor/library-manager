@@ -8,7 +8,7 @@ from view.menu_collection_view import MenuCollection
 class AddItemForm(ctk.CTkToplevel):
     def __init__(self, parent: MenuCollection):
         super().__init__(parent)
-        self.title("New Item")
+        self.title("Add Item")
         self.parent = parent
         self.item_type = parent.list_type_combobox.get()
         self.controller: LibraryController = parent.controller

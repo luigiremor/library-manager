@@ -35,7 +35,7 @@ class MenuStudents(ctk.CTkFrame):
         self.refresh_button.pack(side=tk.LEFT, padx=5)
 
         self.new_button = ctk.CTkButton(
-            self.buttons_frame, text='New Student', command=self.add_student)
+            self.buttons_frame, text='Add Student', command=self.add_student)
         self.new_button.pack(side=tk.LEFT, padx=5)
 
         self.update_button = ctk.CTkButton(
@@ -95,4 +95,3 @@ class MenuStudents(ctk.CTkFrame):
                 label = ctk.CTkLabel(self.details_frame,
                                      text=f"{key}: {value}")
                 label.pack()
-

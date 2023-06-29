@@ -10,7 +10,7 @@ from view.menu_lend_view import MenuLend
 class AddLendForm(ctk.CTkToplevel):
     def __init__(self, parent: MenuLend):
         super().__init__(parent)
-        self.title("New Lend")
+        self.title("Add Lend")
         self.parent = parent
         self.controller: LibraryController = parent.controller
 

@@ -7,15 +7,14 @@ from controller.library_controller import LibraryController
 from tkinter import messagebox
 from view.menu_students_view import MenuStudents
 
+
 class AddStudentForm(ctk.CTkToplevel):
     def __init__(self, parent: MenuStudents):
         super().__init__(parent)
         self.parent = parent
-        self.title('New Student')
+        self.title('Add Student')
         self.controller: LibraryController = parent.controller
         self.create_widgets()
-
-
 
     def create_widgets(self):
         self.select_label = ctk.CTkLabel(self, text="Student Data")
@@ -61,7 +60,6 @@ class AddStudentForm(ctk.CTkToplevel):
         self.cancel_button = ctk.CTkButton(
             self.button_frame, text="Cancel", command=self.destroy)
         self.cancel_button.pack(side=tk.LEFT, padx=5)
-
 
     def create_student(self):
         name = self.name_entry.get()

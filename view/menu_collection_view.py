@@ -66,7 +66,7 @@ class MenuCollection(ctk.CTkFrame):
         self.list_type_combobox.set('Book')
 
         self.add_button = ctk.CTkButton(
-            self.buttons_frame, text='New Item', command=self.add_item)
+            self.buttons_frame, text='Add Item', command=self.add_item)
         self.add_button.pack(side=tk.LEFT, padx=5)
 
         self.update_button = ctk.CTkButton(

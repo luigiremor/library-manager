@@ -48,10 +48,7 @@ class MenuMain(ctk.CTkFrame):
     def go_lend(self):
         self.parent.show_view("menu_lend")
 
-    def widgets(self):
-        self.label = ctk.CTkLabel(
-            self, text="Biblioteca Universitária", font=("Arial", 30))
-
+    def widgets(self):   
         window_width = self.parent.winfo_width()
         window_height = self.parent.winfo_height()
 
@@ -66,7 +63,7 @@ class MenuMain(ctk.CTkFrame):
         self.label_logo = tk.Label(self, image=logo)
 
         center_x = window_width // 2
-        image_y = window_height * 0.4
+        image_y = window_height * 0.5
         self.label_logo.place(x=center_x, y=image_y, anchor="center")
 
         self.label_logo.configure(bg=self["bg"])
@@ -74,6 +71,4 @@ class MenuMain(ctk.CTkFrame):
         self.label_logo.image = logo
         self.label_logo["highlightthickness"] = 0
 
-        # this 20 is to give a little space between the image and the label
-        label_y = image_y + height + 20
-        self.label.place(x=center_x, y=label_y, anchor="center")
+      

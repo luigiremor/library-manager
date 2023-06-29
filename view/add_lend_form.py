@@ -30,15 +30,15 @@ class AddLendForm(ctk.CTkToplevel):
         self.item_type_combobox = ctk.CTkComboBox(
             self, values=['Book', 'Magazine', 'Article'], command=self.update_items_combobox)
         self.item_type_combobox.set('Book')
-        self.item_type_combobox.pack(side=tk.LEFT, fill=tk.X, padx=5, pady=5)
+        self.item_type_combobox.pack(fill=tk.X, padx=5, pady=5)
 
         self.items_combobox = ctk.CTkComboBox(
             self, values=[], command=None)
-        self.items_combobox.pack(side=tk.LEFT, fill=tk.X, padx=5, pady=5)
+        self.items_combobox.pack(fill=tk.X, padx=5, pady=5)
 
         self.add_button = ctk.CTkButton(
             self, text='Add Lend', command=self.add_lend)
-        self.add_button.pack(side=tk.LEFT, padx=5, pady=5)
+        self.add_button.pack(fill=tk.X, padx=5, pady=5)
 
     def add_lend(self):
         student_registration = self.student_combobox.get().split(' - ')[0]
@@ -67,4 +67,11 @@ class AddLendForm(ctk.CTkToplevel):
             self.items_combobox.destroy()
             self.items_combobox = ctk.CTkComboBox(
                 self, values=[f'No {selected_type} available'], command=None)
-        self.items_combobox.pack(side=tk.LEFT, fill=tk.X, padx=5, pady=5)
+        self.add_button.destroy()
+        self.items_combobox.pack(fill=tk.X, padx=5, pady=5)
+        self.add_button = ctk.CTkButton(
+            self, text='Add Lend', command=self.add_lend)
+        self.add_button.pack(fill=tk.X, padx=5, pady=5)
+        
+
+

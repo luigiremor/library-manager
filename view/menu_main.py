@@ -71,6 +71,9 @@ class MenuMain(ctk.CTkFrame):
         image_x = window_width // 2
         image_y = window_height * 0.4
         self.label_logo.place(x=image_x, y=image_y, anchor="center")
+        center_x = window_width // 2
+        image_y = window_height * 0.5
+        self.label_logo.place(x=center_x, y=image_y, anchor="center")
 
         self.label_logo.configure(bg=self["bg"])
 

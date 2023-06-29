@@ -13,7 +13,7 @@ class DatabaseManager(BaseTableManager):
     # Tables
 
     def create_tables(self):
-        # Create tables for Library, Person, Item, Reservation, Lend etc.
+        # Create tables for Library, Person, Item, Lend etc.
         self.create_table_librarian()
         self.create_table_student()
         self.create_table_item()
@@ -21,7 +21,6 @@ class DatabaseManager(BaseTableManager):
         self.create_table_article_item()
         self.create_table_magazine_item()
         # Add other item types like self.create_table_magazine_item() or self.create_table_article_item()
-        self.create_table_reservation()
         self.create_table_lend()
 
     def create_table_librarian(self):
@@ -56,11 +55,8 @@ class DatabaseManager(BaseTableManager):
                 title TEXT NOT NULL,
                 release_year INTEGER NOT NULL,
                 is_lend INTEGER NOT NULL DEFAULT 0,
-                is_reserved INTEGER NOT NULL DEFAULT 0,
                 id_student_lent INTEGER,
-                id_student_reserved INTEGER,
-                FOREIGN KEY (id_student_lent) REFERENCES students (id),
-                FOREIGN KEY (id_student_reserved) REFERENCES students (id)
+                FOREIGN KEY (id_student_lent) REFERENCES students (id)
             )
         """)
         self.conn.commit()
@@ -100,20 +96,6 @@ class DatabaseManager(BaseTableManager):
                 language TEXT NOT NULL,
                 genre TEXT NOT NULL,
                 id_item INTEGER NOT NULL,
-                FOREIGN KEY (id_item) REFERENCES items (id)
-            )
-        """)
-        self.conn.commit()
-
-    def create_table_reservation(self):
-        self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS reservations (
-                id INTEGER PRIMARY KEY,
-                reservation_date TEXT NOT NULL,
-                status TEXT NOT NULL,
-                id_student INTEGER NOT NULL,
-                id_item INTEGER NOT NULL,
-                FOREIGN KEY (id_student) REFERENCES students (id),
                 FOREIGN KEY (id_item) REFERENCES items (id)
             )
         """)
@@ -336,20 +318,6 @@ class DatabaseManager(BaseTableManager):
 
         self.conn.commit()
 
-    def reserve_item(self, item_id, student_id):
-        self.cursor.execute("""
-            UPDATE items
-            SET is_reserved = 1, id_student_reserved = ?
-            WHERE id = ?
-        """, (student_id, item_id))
-
-        reservation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        status = 'reserved'
-        self.insert('reservations', ['reservation_date', 'status', 'id_student', 'id_item'],
-                    [reservation_date, status, student_id, item_id])
-
-        self.conn.commit()
-
     def lend_item(self, item_id, student_id):
         self.cursor.execute("""
             UPDATE items
@@ -368,17 +336,6 @@ class DatabaseManager(BaseTableManager):
 
     def get_all_lends(self):
         return self.select_all('lends')
-
-    def get_all_reservations(self):
-        return self.select_all('reservations')
-
-    def cancel_item_reservation(self, item_id):
-        self.cursor.execute("""
-            UPDATE items
-            SET is_reserved = 0, id_student_reserved = NULL
-            WHERE id = ?
-        """, (item_id,))
-        self.conn.commit()
 
     def return_item(self, lend_id, fine_per_day=1):
         # Get the return date and student id from lends table
@@ -457,39 +414,6 @@ class DatabaseManager(BaseTableManager):
 
         return None
 
-    def get_student_who_reserved_item(self, item_id):
-        self.cursor.execute("""
-            SELECT students.* 
-            FROM items
-            JOIN students ON items.id_student_reserved = students.registration
-            WHERE items.id = ?
-        """, (item_id,))
-        result = self.cursor.fetchone()
-
-        if result:
-            columns = [column[0] for column in self.cursor.description]
-            return dict(zip(columns, result))
-
-        return None
-
-    def get_all_students_who_reserved_item(self):
-        self.cursor.execute("""
-            SELECT students.*
-            FROM items
-            JOIN students ON items.id_student_reserved = students.registration
-            GROUP BY students.registration
-        """)
-        result = self.cursor.fetchall()
-
-        if result:
-            columns = [column[0] for column in self.cursor.description]
-            students = []
-            for row in result:
-                students.append(dict(zip(columns, row)))
-            return students
-
-        return None
-
     def get_all_lendings(self):
         self.cursor.execute("""
             SELECT lends.*, items.title, students.registration, students.name
@@ -539,5 +463,4 @@ class DatabaseManager(BaseTableManager):
         self.cursor.execute("DROP TABLE IF EXISTS article_items")
         self.cursor.execute("DROP TABLE IF EXISTS magazine_items")
         self.cursor.execute("DROP TABLE IF EXISTS lends")
-        self.cursor.execute("DROP TABLE IF EXISTS reservations")
         self.conn.commit()

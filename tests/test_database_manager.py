@@ -20,19 +20,19 @@ class TestDatabaseManager(unittest.TestCase):
 
     def setUp(self):
         self.db.create_tables()
-        self.student = Student('Luigi', 'luigi@gmail.com',
-                               '12345678910', '123456789', '123456789')
+        self.student = Student(name='Luigi', email='luigi@gmail.com',
+                               cpf='12345678910', tel='123456789', registration='123456789')
         self.student2 = Student(
-            'Mario', 'mario@gmail.com', '12345678911', '123456789', '123456788')
-        self.book = Book('The Lord of the Rings',
-                         'J. R. R. Tolkien', False, False, 1954)
-        self.book2 = Book('The Hobbit', 'J. R. R. Tolkien',
-                          False, False, '1937')
-        self.article = Article('The Power of Habit', 2012, False, False, 'Lalalalala',
-                               '371', 'Luigi', 'English', 'Habit, Self-help, Psychology')
+            name='Mario', email='mario@gmail.com', cpf='12345678911', tel='123456789', registration='123456788')
+        self.book = Book(title='The Lord of the Rings',
+                         author='J. R. R. Tolkien', is_lend=False, release_year=1954)
+        self.book2 = Book(title='The Hobbit', author='J. R. R. Tolkien',
+                          is_lend=False, release_year='1937')
+        self.article = Article(title='The Power of Habit', release_year=2012, is_lend=False, abstract='Lalalalala',
+                               word_count='371', author='Luigi', language='English', keywords='Habit, Self-help, Psychology')
         self.magazine = Magazine(
-            'Superinteressante', 2019, False, False, 'Abril', '100', 'Portuguese', 'Science')
-        self.librarian = Librarian('Luigi', 'luigi@gmail.com')
+            title='Superinteressante', release_year=2019, is_lend=False, publisher='Abril', pages_count='100', language='Portuguese', genre='Science')
+        self.librarian = Librarian(name='Luigi', email='luigi@gmail.com')
         self.password = '123456'
 
     def tearDown(self):
@@ -81,7 +81,6 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertEqual(self.book.author, book_db['author'])
         self.assertEqual(self.book.release_year, book_db['release_year'])
         self.assertEqual(self.book.is_lend, book_db['is_lend'])
-        self.assertEqual(self.book.is_reserved, book_db['is_reserved'])
 
     def test_lend_book_to_student(self):
         self.db.create_student(self.student.name, self.student.email,
@@ -104,27 +103,6 @@ class TestDatabaseManager(unittest.TestCase):
         book_db = self.db.get_book_item_by_id(1)
         self.assertFalse(book_db['is_lend'])
 
-    def test_reserve_book_to_student(self):
-        self.db.create_student(self.student.name, self.student.email,
-                               self.student.cpf, self.student.tel, self.student.registration)
-        self.db.create_book_item(
-            self.book.title, self.book.author, self.book.release_year)
-        book_db = self.db.get_book_item_by_id(1)
-        self.db.reserve_item(book_db['id'], self.student.registration)
-        book_db = self.db.get_book_item_by_id(1)
-        self.assertTrue(book_db['is_reserved'])
-
-    def test_cancel_book_reservation_from_student(self):
-        self.db.create_student(self.student.name, self.student.email,
-                               self.student.cpf, self.student.tel, self.student.registration)
-        self.db.create_book_item(
-            self.book.title, self.book.author, self.book.release_year)
-        book_db = self.db.get_book_item_by_id(1)
-        self.db.reserve_item(book_db['id'], self.student.registration)
-        self.db.cancel_item_reservation(book_db['id'])
-        book_db = self.db.get_book_item_by_id(1)
-        self.assertFalse(book_db['is_reserved'])
-
     def test_get_student_who_borrowed_book(self):
         self.db.create_student(self.student.name, self.student.email,
                                self.student.cpf, self.student.tel, self.student.registration)
@@ -134,16 +112,6 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.lend_item(book_db['id'], self.student.registration)
         student_db = self.db.get_student_who_borrowed_item(book_db['id'])
         book_db = self.db.get_book_item_by_id(1)
-        self.assertEqual(self.student.name, student_db['name'])
-
-    def test_get_student_who_reserved_book(self):
-        self.db.create_student(self.student.name, self.student.email,
-                               self.student.cpf, self.student.tel, self.student.registration)
-        self.db.create_book_item(
-            self.book.title, self.book.author, self.book.release_year)
-        book_db = self.db.get_book_item_by_id(1)
-        self.db.reserve_item(book_db['id'], self.student.registration)
-        student_db = self.db.get_student_who_reserved_item(book_db['id'])
         self.assertEqual(self.student.name, student_db['name'])
 
     def test_create_and_get_article(self):
@@ -165,7 +133,6 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertEqual(self.article.language, article_db['language'])
         self.assertEqual(self.article.keywords, article_db['keywords'])
         self.assertEqual(self.article.is_lend, article_db['is_lend'])
-        self.assertEqual(self.article.is_reserved, article_db['is_reserved'])
 
     def test_lend_article_to_student(self):
         self.db.create_student(self.student.name, self.student.email,
@@ -217,7 +184,6 @@ class TestDatabaseManager(unittest.TestCase):
         self.assertEqual(self.magazine.genre, magazine_db['genre'])
         self.assertEqual(self.magazine.language, magazine_db['language'])
         self.assertEqual(self.magazine.is_lend, magazine_db['is_lend'])
-        self.assertEqual(self.magazine.is_reserved, magazine_db['is_reserved'])
 
     def test_get_all_students_who_borrowed_item(self):
         self.db.create_student(self.student.name, self.student.email,
@@ -233,22 +199,6 @@ class TestDatabaseManager(unittest.TestCase):
         self.db.lend_item(book_db['id'], self.student.registration)
         self.db.lend_item(book_db2['id'], self.student2.registration)
         students_db = self.db.get_all_students_who_borrowed_item()
-        self.assertEqual(2, len(students_db))
-
-    def test_get_all_students_who_reserved_item(self):
-        self.db.create_student(self.student.name, self.student.email,
-                               self.student.cpf, self.student.tel, self.student.registration)
-        self.db.create_student(self.student2.name, self.student2.email,
-                               self.student2.cpf, self.student2.tel, self.student2.registration)
-        self.db.create_book_item(
-            self.book.title, self.book.author, self.book.release_year)
-        self.db.create_book_item(
-            self.book2.title, self.book2.author, self.book2.release_year)
-        book_db = self.db.get_book_item_by_id(1)
-        book_db2 = self.db.get_book_item_by_id(2)
-        self.db.reserve_item(book_db['id'], self.student.registration)
-        self.db.reserve_item(book_db2['id'], self.student2.registration)
-        students_db = self.db.get_all_students_who_reserved_item()
         self.assertEqual(2, len(students_db))
 
     def test_update_book_item(self):

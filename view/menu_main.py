@@ -4,7 +4,6 @@ from PIL import Image, ImageTk
 from controller.library_controller import LibraryController
 
 
-
 class MenuMain(ctk.CTkFrame):
     def __init__(self, parent, controller: LibraryController):
         super().__init__(parent)
@@ -31,10 +30,6 @@ class MenuMain(ctk.CTkFrame):
             self, text="Students", command=self.go_student)
         self.btn_students.grid(row=0, column=3, padx=10, pady=10)
 
-        self.btn_add = ctk.CTkButton(
-            self, text="Reservation", command=self.go_reservation)
-        self.btn_add.grid(row=0, column=4, padx=10, pady=10)
-
         self.btn_logout = ctk.CTkButton(
             self, text="Logout", command=self.exit)
         self.btn_logout.grid(row=0, column=6, padx=10, pady=10)
@@ -54,18 +49,16 @@ class MenuMain(ctk.CTkFrame):
     def go_lend(self):
         self.parent.show_view("menu_lend")
 
-    def go_reservation(self):
-        self.parent.show_view("menu_reservation")
-
     def widgets(self):
-        self.label = ctk.CTkLabel(self, text="Biblioteca Universitária", font=("Arial", 30))
+        self.label = ctk.CTkLabel(
+            self, text="Biblioteca Universitária", font=("Arial", 30))
         self.label.place(x=330, y=500)
 
     def images(self):
         image = Image.open("view/images/ufsc2.png")
 
-        width = 300  
-        height = 300 
+        width = 300
+        height = 300
         image = image.resize((width, height), Image.ANTIALIAS)
 
         logo = ImageTk.PhotoImage(image)
@@ -75,5 +68,5 @@ class MenuMain(ctk.CTkFrame):
 
         self.label_logo.configure(bg=self["bg"])
 
-        self.label_logo.image = logo  
+        self.label_logo.image = logo
         self.label_logo["highlightthickness"] = 0

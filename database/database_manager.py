@@ -379,12 +379,20 @@ class DatabaseManager(BaseTableManager):
         """, (item_id,))
         self.conn.commit()
 
-    def return_item(self, item_id):
+    def return_item(self, lend_id):
         self.cursor.execute("""
             UPDATE items
             SET is_lend = 0, id_student_lent = NULL
+            WHERE id = (
+                SELECT id_item FROM lends WHERE id = ?
+            )
+        """, (lend_id,))
+        self.conn.commit()
+
+        self.cursor.execute("""
+            DELETE FROM lends
             WHERE id = ?
-        """, (item_id,))
+        """, (lend_id,))
         self.conn.commit()
 
     def get_student_who_borrowed_item(self, item_id):

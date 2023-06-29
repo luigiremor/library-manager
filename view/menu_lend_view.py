@@ -57,16 +57,12 @@ class MenuLend(ctk.CTkFrame):
         self.go_back_button.pack(side=tk.LEFT, padx=5)
 
         self.add_button = ctk.CTkButton(
-            self.buttons_frame, text='New Lend', command=self.add_lend)
+            self.buttons_frame, text='Lend Item', command=self.add_lend)
         self.add_button.pack(side=tk.LEFT, padx=5)
 
-        self.update_button = ctk.CTkButton(
-            self.buttons_frame, text='Update Lend', command=None)
-        self.update_button.pack(side=tk.LEFT, padx=5)
-
-        self.delete_button = ctk.CTkButton(
-            self.buttons_frame, text='Delete Lend', command=None)
-        self.delete_button.pack(side=tk.LEFT, padx=5)
+        self.return_button = ctk.CTkButton(
+            self.buttons_frame, text='Return Item', command=self.return_lend)
+        self.return_button.pack(side=tk.LEFT, padx=5)
 
         self.details_frame = ctk.CTkFrame(self)
         self.details_frame.pack(side=tk.RIGHT, fill=tk.Y)
@@ -85,7 +81,7 @@ class MenuLend(ctk.CTkFrame):
             return_day = datetime.strptime(
                 item['return_date'], "%Y-%m-%d %H:%M:%S")
             days_until_return = (return_day - today).days
-            title = f'Protocolo: {item["id"]} | Item: {item["title"]}({item["id_item"]}) - Student: {item["name"]}({item["registration"]}) - Days Until Return: {days_until_return} days'
+            title = f'Protocolo: {item["id"]} | Título: {item["title"]}({item["id_item"]}) - Student: {item["name"]}({item["registration"]}) - Days Until Return: {days_until_return} days'
             self.items_listbox.insert(index, title, justify='left')
 
     def add_lend(self):
@@ -94,11 +90,10 @@ class MenuLend(ctk.CTkFrame):
 
     def return_lend(self):
         selected = self.items_listbox.get()
-        item_id = selected.split(' - ')[0]
+        item_id = selected.split(' | ')[0].split(':')[1].strip()
 
         if item_id:
-            self.controller.return_lend(item_id)
-            messagebox.showinfo('Success', 'Lend returned successfully')
+            self.controller.return_item(item_id)
             self.refresh_items()
 
     def show_details(self, event=None):

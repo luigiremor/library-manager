@@ -1,12 +1,12 @@
 # LibraryView.py
 import customtkinter
 from controller.library_controller import LibraryController
-from view.menu_auth_view import MenuAuth
-from view.menu_collection_view import MenuCollection
+from view.auth.menu_auth_view import MenuAuth
+from view.auth.menu_register import MenuRegister
+from view.collection.menu_collection_view import MenuCollection
+from view.lend.menu_lend_view import MenuLend
 from view.menu_main import MenuMain
-from view.menu_register import MenuRegister
-from view.menu_students_view import MenuStudents
-from view.menu_lend_view import MenuLend
+from view.student.menu_students_view import MenuStudents
 
 
 class LibraryView(customtkinter.CTk):

@@ -3,7 +3,7 @@ import tkinter as tk
 import customtkinter as ctk
 from components.ctk_listbox import CTkListbox
 from controller.library_controller import LibraryController
-from view.menu_lend_view import MenuLend
+from view.lend.menu_lend_view import MenuLend
 
 
 class AddLendForm(ctk.CTkToplevel):
@@ -71,6 +71,3 @@ class AddLendForm(ctk.CTkToplevel):
         self.add_button = ctk.CTkButton(
             self, text='Add Lend', command=self.add_lend)
         self.add_button.pack(fill=tk.X, padx=5, pady=5)
-        
-
-

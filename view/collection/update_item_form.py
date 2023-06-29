@@ -3,7 +3,7 @@ import tkinter as tk
 from components.ctk_listbox import CTkListbox
 
 from controller.library_controller import LibraryController
-from view.menu_collection_view import MenuCollection
+from view.collection.menu_collection_view import MenuCollection
 
 
 class UpdateItemForm(ctk.CTkToplevel):

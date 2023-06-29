@@ -87,7 +87,7 @@ class MenuLend(ctk.CTkFrame):
             self.items_listbox.insert(index, title, justify='left')
 
     def add_lend(self):
-        from view.add_lend_form import AddLendForm
+        from view.lend.add_lend_form import AddLendForm
         AddLendForm(self)
 
     def return_lend(self):

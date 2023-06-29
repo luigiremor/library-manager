@@ -2,7 +2,7 @@ import customtkinter as ctk
 import tkinter as tk
 
 from controller.library_controller import LibraryController
-from view.menu_collection_view import MenuCollection
+from view.collection.menu_collection_view import MenuCollection
 
 
 class AddItemForm(ctk.CTkToplevel):

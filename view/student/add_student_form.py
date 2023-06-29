@@ -5,7 +5,8 @@ from components.ctk_listbox import CTkListbox
 
 from controller.library_controller import LibraryController
 from tkinter import messagebox
-from view.menu_students_view import MenuStudents
+
+from view.student.menu_students_view import MenuStudents
 
 
 class AddStudentForm(ctk.CTkToplevel):

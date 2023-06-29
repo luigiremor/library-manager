@@ -1,6 +1,5 @@
 import customtkinter as ctk
 from controller.library_controller import LibraryController
-from view.menu_register import MenuRegister
 
 
 class MenuAuth(ctk.CTkFrame):

@@ -96,11 +96,11 @@ class MenuCollection(ctk.CTkFrame):
             self.items_listbox.insert(index, title, justify='left')
 
     def add_item(self):
-        from view.add_item_form import AddItemForm
+        from view.collection.add_item_form import AddItemForm
         AddItemForm(self)
 
     def update_item(self):
-        from view.update_item_form import UpdateItemForm
+        from view.collection.update_item_form import UpdateItemForm
         UpdateItemForm(self)
 
     def delete_item(self):

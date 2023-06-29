@@ -62,7 +62,7 @@ class MenuStudents(ctk.CTkFrame):
                 self.students_listbox.insert(i, title)
 
     def add_student(self):
-        from view.add_student_form import AddStudentForm
+        from view.student.add_student_form import AddStudentForm
         AddStudentForm(self)
 
     def update_student(self):
@@ -72,7 +72,7 @@ class MenuStudents(ctk.CTkFrame):
             registration_selected)
 
         if student:
-            from view.update_student_form import UpdateStudentForm
+            from view.student.update_student_form import UpdateStudentForm
             UpdateStudentForm(self, student=student)
 
     def delete_student(self):

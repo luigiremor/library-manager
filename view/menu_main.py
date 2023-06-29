@@ -11,7 +11,6 @@ class MenuMain(ctk.CTkFrame):
         self.controller = controller
         self.navbar()
         self.widgets()
-        self.images()
 
     def navbar(self):
         self.btn_lend = ctk.CTkButton(
@@ -52,9 +51,14 @@ class MenuMain(ctk.CTkFrame):
     def widgets(self):
         self.label = ctk.CTkLabel(
             self, text="Biblioteca Universitária", font=("Arial", 30))
-        self.label.place(x=330, y=500)
 
-    def images(self):
+        window_width = self.parent.winfo_width()
+        window_height = self.parent.winfo_height()
+
+        label_x = window_width // 2.5
+        label_y = window_height * 0.55
+        self.label.place(x=label_x, y=label_y, anchor="center")
+
         image = Image.open("view/images/ufsc2.png")
 
         width = 300
@@ -64,9 +68,13 @@ class MenuMain(ctk.CTkFrame):
         logo = ImageTk.PhotoImage(image)
 
         self.label_logo = tk.Label(self, image=logo)
-        self.label_logo.place(x=450, y=245)
+
+        image_x = window_width // 2
+        image_y = window_height * 0.4
+        self.label_logo.place(x=image_x, y=image_y, anchor="center")
 
         self.label_logo.configure(bg=self["bg"])
 
         self.label_logo.image = logo
         self.label_logo["highlightthickness"] = 0
+

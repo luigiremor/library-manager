@@ -32,7 +32,7 @@ class MenuMain(ctk.CTkFrame):
         self.btn_students.grid(row=0, column=3, padx=10, pady=10)
 
         self.btn_add = ctk.CTkButton(
-            self, text="Add", command=None)
+            self, text="Reservation", command=self.go_reservation)
         self.btn_add.grid(row=0, column=4, padx=10, pady=10)
 
         self.btn_logout = ctk.CTkButton(
@@ -53,6 +53,9 @@ class MenuMain(ctk.CTkFrame):
 
     def go_lend(self):
         self.parent.show_view("menu_lend")
+
+    def go_reservation(self):
+        self.parent.show_view("menu_reservation")
 
     def widgets(self):
         self.label = ctk.CTkLabel(self, text="Biblioteca Universitária", font=("Arial", 30))

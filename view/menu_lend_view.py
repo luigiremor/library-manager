@@ -76,6 +76,10 @@ class MenuLend(ctk.CTkFrame):
     def refresh_items(self):
         lends = self.controller.get_all_lendings()
         self.items_listbox.clear()
+        if not lends:
+            self.items_listbox.insert(0, 'No lends found')
+            return
+
         for index, item in enumerate(lends):
             today = datetime.today()
             return_day = datetime.strptime(

@@ -87,6 +87,11 @@ class MenuCollection(ctk.CTkFrame):
     def refresh_items(self, type_item):
         items = self.controller.get_all_items_by_type(type_item)
         self.items_listbox.clear()
+
+        if not items:
+            self.items_listbox.insert(0, 'No items found')
+            return
+
         for index, item in enumerate(items):
             title = str(item['id_item']) + ' - ' + item['title'] + \
                 ' | Available: ' + self.value_to_string[item['is_lend']]

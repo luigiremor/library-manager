@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 from tkinter import messagebox
 from authenticators.authenticator import Authenticator
 from database.base_table_manager import BaseTableManager
+from datetime import datetime
 
 
 class DatabaseManager(BaseTableManager):
@@ -379,7 +380,34 @@ class DatabaseManager(BaseTableManager):
         """, (item_id,))
         self.conn.commit()
 
-    def return_item(self, lend_id):
+    def return_item(self, lend_id, fine_per_day=1):
+        # Get the return date and student id from lends table
+        self.cursor.execute("""
+            SELECT return_date, id_student FROM lends WHERE id = ?
+        """, (lend_id,))
+        result = self.cursor.fetchone()
+
+        if result is None:
+            raise ValueError("No such lend exists")
+
+        return_date_str, student_id = result
+        return_date = datetime.strptime(return_date_str, "%Y-%m-%d %H:%M:%S")
+
+        # Calculate fine if today's date is greater than return date
+        today = datetime.now()
+        if today > return_date:
+            days_overdue = (today - return_date).days
+            fine = days_overdue * fine_per_day
+
+            # Update the fine_delay for the student in students table
+            self.cursor.execute("""
+                UPDATE students
+                SET fine_delay = fine_delay + ?
+                WHERE id = ?
+            """, (fine, student_id))
+            self.conn.commit()
+
+        # Update the items table and delete the record from lends table
         self.cursor.execute("""
             UPDATE items
             SET is_lend = 0, id_student_lent = NULL
